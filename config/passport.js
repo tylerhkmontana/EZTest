@@ -46,7 +46,7 @@ module.exports = function(passport) {
     passport.use(new GoogleStrategy({
         clientID: process.env.GOAUTH_CLIENT_ID,
         clientSecret: process.env.GOAUTH_CLIENT_PASSWORD,
-        callbackURL: "http://localhost:3000/users/auth/google/dashboard" || "https://sheltered-springs-08714.herokuapp.com/users/auth/google/dashboard",
+        callbackURL: "https://sheltered-springs-08714.herokuapp.com/users/auth/google/dashboard",
         userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
       },
       (accessToken, refreshToken, profile, cb) => {
