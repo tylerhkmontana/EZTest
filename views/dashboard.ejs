@@ -1,3 +1,85 @@
-<h1 class="mt-4">Dashboard</h1>
-<p class="lead mb-3">Welcome <%= name %></p>
-<a href="/users/logout" class="btn btn-secondary">Logout</a>
+<%- include("./partials/dashboardstyle.ejs") %>
+
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container d-flex justify-content-between">
+
+      <h1><a href="/dashboard" style="color: white; text-decoration: none;"><i class="fas fa-graduation-cap"></i>EZTest</a></h1>
+
+
+      <div class="dropdown">
+        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Courses Resources
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item" href="https://tophat.com/" target="_blank">TopHat</a>
+          <a class="dropdown-item" href="https://www.zybooks.com/" target="_blank">zyBooks</a>
+          <a class="dropdown-item" href="https://drive.google.com/drive/folders/1co7vzY9_75cCiuNTHXCGf3pKbpf_TTwC" target="_blank">Course Drive</a>
+          <a class="dropdown-item" href="https://www.w3schools.com/" target="_blank">W3Schools</a>
+        </div>
+      </div>
+
+     
+    </div>
+  </div>
+</header>
+
+<main role="main">
+
+    <h5 style="color: black; margin: 5px; display: inline;">Welcome, <%= typeof user !="undefined" ? user: "" %></h5>
+    <a class="btn btn-outline-secondary btn-sm active" href="/users/logout">Log out</a>
+ 
+  <div class="album py-5 bg-light">
+    <div class="container">
+      
+      <div class="row">
+
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">CS 355</h5>
+              <p class="card-text">
+                <ul>
+                  <li>Course Description: Internet and Web Tech - Spring 2020 (Tu/Th 12:15 pm - 1:30 pm)</li>
+                  <li>Instructor: Lawrence Teitelman</li>
+                  <li>Join Code: Join Code: 454024</li>
+                </ul>
+              </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a href="/users/student/course" class="btn btn-sm btn-outline-secondary">Enter</a>
+                  <a href="#" class="btn btn-sm btn-outline-secondary active">Drop</a>
+                </div>
+                <small class="text-muted">Course Period"</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">CS 340</h5>
+              <p class="card-text">
+                <ul>
+                  <li>Course Description: Internet and Web Tech - Spring 2020 (Tu/Th 12:15 pm - 1:30 pm)</li>
+                  <li>Instructor: Lawrence Teitelman</li>
+                  <li>Join Code: Join Code: 454024</li>
+                </ul>
+              </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a href="/users/student/course" class="btn btn-sm btn-outline-secondary">Enter</a>
+                  <a href="#" class="btn btn-sm btn-outline-secondary active">Drop</a>
+                </div>
+                <small class="text-muted">"Course period"</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</main>
