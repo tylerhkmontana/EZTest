@@ -8,7 +8,6 @@ const User = require("../models/User");
 
 module.exports = function (passport) {
   passport.serializeUser((user, done) => {
-    console.log(user.id);
     console.log("Serialization");
     done(null, user.id);
   });

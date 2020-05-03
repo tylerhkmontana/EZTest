@@ -1,11 +1,19 @@
 <%- include("./partials/dashboardstyle.ejs") %>
 
 <header>
-  <div class="navbar navbar-dark bg-dark shadow-sm">
+  <% if (usertype === "Student") { %>
+    <div class="navbar navbar-dark bg-warning shadow-sm">
+  <% } else { %>
+    <div class="navbar navbar-dark bg-danger shadow-sm">
+  <% } %>
     <div class="container d-flex justify-content-between">
 
-      <h1><a href="/dashboard" style="color: white; text-decoration: none;"><i class="fas fa-graduation-cap"></i>EZTest</a></h1>
-
+      
+      <% if (usertype === "Student") { %>
+        <h1><a href="/student/dashboard" style="color: white; text-decoration: none;"><i class="fas fa-graduation-cap"></i>EZTest</a></h1>
+      <% } else { %>
+        <h1><a href="/instructor/dashboard" style="color: white; text-decoration: none;"><i class="fas fa-graduation-cap"></i>EZTest</a></h1>
+      <% } %>
 
       <div class="dropdown">
         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -29,10 +37,120 @@
     <h5 style="color: black; margin: 5px; display: inline;">Welcome, <%= typeof user !="undefined" ? user: "" %></h5>
     <a class="btn btn-outline-secondary btn-sm active" href="/users/logout">Log out</a>
  
-  <div class="album py-5 bg-light">
+  <div class="album bg-light">
+    <div> 
+     <% if (usertype === "Student"){ %>
+      <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal" style="float: right;">
+        Enroll
+      </button>     
+      <% } else { %>
+        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal" style="float: right">
+          Create Course
+        </button> 
+     <% } %>
+    </div><br>
     <div class="container">
       
-      <div class="row">
+      <div class="row" >
+
+
+        <!-- Creating Course Window -->
+        
+        
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Course</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form action="/instructor/dashboard" method="POST">
+              <div class="modal-body">
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Course Name</span>
+                    </div>
+                    <input type="text" class="form-control" name="courseName" required>
+                  </div>
+
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Section</span>
+                    </div>
+                    <label for="timeFrom" class="col-sm-2 col-form-label">From</label>
+                    <input type="time" class="form-control" id="timeFrom" name="courseTime" required>
+                    <label for="timeTo" class="col-sm-1 col-form-label">To</label>
+                    <input type="time" class="form-control" id="timeTo" name="courseTime" required>
+                  </div>
+
+                  <div class="input-group input-group-sm mb-3">
+                      <div class="input-group-prepend">
+                      </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" value="Mon" name="days">
+                      <label class="form-check-label">Mon</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" value="Tue" name="days">
+                      <label class="form-check-label">Tue</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" value="Wed" name="days">
+                      <label class="form-check-label">Wed</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" value="Thur" name="days">
+                      <label class="form-check-label">Thur</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" value="Fri" name="days">
+                      <label class="form-check-label">Fri</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" value="Sat" name="days">
+                      <label class="form-check-label">Sat</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" value="Sun" name="days">
+                      <label class="form-check-label">Sun</label>
+                    </div>
+                  </div>
+
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Semester</span>
+                    </div>
+                    <select class="form-control form-control-sm" name="semester">
+                      <option value="Srping">Spring</option>
+                      <option value="Summer">Summer</option>
+                      <option value="Fall">Fall</option>
+                      <option value="Winter">Winter</option>
+                    </select>
+                  </div>
+
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Year</span>
+                    </div>
+                    <% let currentYear = new Date().getFullYear() %>
+                    <select class="form-control form-control-sm" name="year">
+                      <option value=<%= currentYear %>><%= currentYear %></option>
+                      <option value=<%= currentYear+1 %>><%= currentYear+1 %></option>
+                    </select>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Create</button>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+
+
 
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
@@ -48,31 +166,9 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <a href="/users/student/course" class="btn btn-sm btn-outline-secondary">Enter</a>
-                  <a href="#" class="btn btn-sm btn-outline-secondary active">Drop</a>
+                  <a href="#" class="btn btn-sm btn-outline-danger">Drop</a>
                 </div>
-                <small class="text-muted">Course Period"</small>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">CS 340</h5>
-              <p class="card-text">
-                <ul>
-                  <li>Course Description: Internet and Web Tech - Spring 2020 (Tu/Th 12:15 pm - 1:30 pm)</li>
-                  <li>Instructor: Lawrence Teitelman</li>
-                  <li>Join Code: Join Code: 454024</li>
-                </ul>
-              </p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <a href="/users/student/course" class="btn btn-sm btn-outline-secondary">Enter</a>
-                  <a href="#" class="btn btn-sm btn-outline-secondary active">Drop</a>
-                </div>
-                <small class="text-muted">"Course period"</small>
+                <!-- <small class="text-muted">Course Period"</small> -->
               </div>
             </div>
           </div>

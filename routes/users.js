@@ -122,12 +122,30 @@ router.post("/register", (req, res) => {
 
 // Login Handle
 router.post("/login", (req, res, next) => {
-  req.flash("user_info", "dddddd")
-  passport.authenticate("local", {
-    successRedirect: "/dashboard",
-    failureRedirect: "/users/login",
-    failureFlash: true,
-  })(req, res, next);
+  User.findOne({email: req.body.email})
+   .then(user => {
+     if(user){
+       if(user.usertype === "Instructor"){
+        passport.authenticate("local", {
+          successRedirect: "/instructor/dashboard",
+          failureRedirect: "/users/login",
+          failureFlash: true,
+        })(req, res, next);
+         console.log("You are instructor")
+       } else {
+        passport.authenticate("local", {
+          successRedirect: "/student/dashboard",
+          failureRedirect: "/users/login",
+          failureFlash: true,
+        })(req, res, next);
+         console.log("You are student")
+       }
+     } else {
+       req.flash("error_msg", "User not found")
+       res.redirect("/users/login")
+     }
+   })
+   .catch(err => console.log(err))
 });
 
 // Logout Handle

@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  googleId: String, // only for google user
+  googleId: String // only for google user
 });
 
 userSchema.plugin(findOrCreate);
