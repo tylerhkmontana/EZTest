@@ -10,6 +10,11 @@ module.exports = {
     if (!req.isAuthenticated()) {
       return next();
     }
-    res.redirect("/dashboard");
+    const usertype = req.user.usertype
+    if(usertype === "Student"){
+      res.redirect("student/dashboard");
+    } else {
+      res.redirect("instructor/dashboard");
+    }
   },
 };
