@@ -36,9 +36,9 @@
 
     <h5 style="color: black; margin: 5px; display: inline;"><%= typeof user !="undefined" ? user: "" %>
       <% if (usertype === "Student"){ %>
-        <span class="badge badge-warning"><%= usertype %></span>    
+        <span class="badge badge-pill badge-warning"><%= usertype %></span>    
         <% } else { %>
-          <span class="badge badge-danger"><%= usertype %></span>
+          <span class="badge badge-pill badge-danger"><%= usertype %></span>
        <% } %>
     </h5>
     <a class="btn btn-outline-secondary btn-sm active" href="/users/logout">Log out</a>
