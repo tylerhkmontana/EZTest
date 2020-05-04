@@ -25,7 +25,7 @@ router.get("/dashboard", ensureAuthenticated, (req, res) =>
         // Courses that the student enrolled in were found
         if (courses) {
           res.render("dashboard", {
-            user: `${req.user.name}[${req.user.usertype}]`, usertype: req.user.usertype,
+            user: req.user.name, usertype: req.user.usertype,
             courses: courses
           })
         // CourseIds were found but could not find any course associated with the courseIds

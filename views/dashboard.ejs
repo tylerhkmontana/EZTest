@@ -34,7 +34,13 @@
 
 <main role="main">
 
-    <h5 style="color: black; margin: 5px; display: inline;">Welcome, <%= typeof user !="undefined" ? user: "" %></h5>
+    <h5 style="color: black; margin: 5px; display: inline;"><%= typeof user !="undefined" ? user: "" %>
+      <% if (usertype === "Student"){ %>
+        <span class="badge badge-warning"><%= usertype %></span>    
+        <% } else { %>
+          <span class="badge badge-danger"><%= usertype %></span>
+       <% } %>
+    </h5>
     <a class="btn btn-outline-secondary btn-sm active" href="/users/logout">Log out</a>
     <%- include("./partials/messages") %>
   <div class="album bg-light">
@@ -49,12 +55,9 @@
         </button> 
      <% } %>
     </div><br>
+    
     <div class="container">
-      
       <div class="row" >
-
-
-       
         <% if(usertype === "Student"){ %>
           <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -192,7 +195,7 @@
                     <ul>
                       <li>Section: <%= course.section %></li>
                       <li>Instructor: <%= course.instructorName %></li>
-                      <li>Course Code: [<%= course._id %>]</li>
+                      <li>[Course Code] <span class="badge badge-pill badge-info"><%= course._id %></span></li>
                     </ul>
                   </p>
                   <div class="d-flex justify-content-between align-items-center">
@@ -256,14 +259,11 @@
                           </div>
                         </div>
                       </div>
+                      <% } %>
                       </div>
-                    <% } %>
-                    
-                    <!-- <small class="text-muted">Course Period"</small> -->
                   </div>
                 </div>
               </div>
-            </div>
          <% }) %>
         <% } else { %>
             <% if (usertype === "Student"){ %>

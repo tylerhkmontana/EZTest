@@ -12,7 +12,7 @@ router.get("/dashboard", ensureAuthenticated, (req, res) => {
     }
 
     res.render("dashboard", {
-      user: `${req.user.name}[${req.user.usertype}]`, usertype: req.user.usertype,
+      user: req.user.name, usertype: req.user.usertype,
       courses: course
     })
   })
