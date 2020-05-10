@@ -61,14 +61,10 @@ QuestionParticipant = {
 }
 
 
-* Show Deadline
-* Delete Assignment
-* Edit Assignment
+
 * Compare deadline and current date, and separate previous and current assignment.
 
-3. An instructor/student user should be able to enter his correct course page
 4. An instructor should be able to see enrolled students' info inside the course page
-5. An instructor should be able to create/delete assignment
 6. A student should be able to solve the assignment assigned to the course that he enrolled in
 7. A student should be able to see his grade on the assignment that he submitted
 8. An instructor should be able to see how his students doing with the course
