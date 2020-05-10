@@ -19,7 +19,7 @@ Course = {
 Assignment = {
     _id: ObjectId("..."),
     assignmentName: String,
-    dueDate: Date,
+    deadline: Date,
     totalPoints: Int,
     Course_id: ObjectId("...")
 }
@@ -60,7 +60,12 @@ QuestionParticipant = {
     answer: String
 }
 
-2. Dashboard displays enrolled/created courses and able to enroll/create a new course
+
+* Show Deadline
+* Delete Assignment
+* Edit Assignment
+* Compare deadline and current date, and separate previous and current assignment.
+
 3. An instructor/student user should be able to enter his correct course page
 4. An instructor should be able to see enrolled students' info inside the course page
 5. An instructor should be able to create/delete assignment

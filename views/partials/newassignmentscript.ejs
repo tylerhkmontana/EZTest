@@ -1,0 +1,183 @@
+<script>
+    let questionNumber = 1
+    
+    // Add questinon based on the type
+    function addQuestion(e) {
+        let multipleQuestion = document.createElement("div")
+        let shortAnswer = document.createElement("div")
+        multipleQuestion.innerHTML = `
+            <div class="question form-group" style="border: 2px dotted gray; padding: 5px;">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text">Question ${questionNumber}</span>
+                    </div>
+                    <textarea class="form-control" aria-label="With textarea" name="${questionNumber}" required></textarea>
+                </div>
+                
+                <div class="multiple">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">A</span>
+                        </div>
+                        <input type="text" class="form-control" name="${questionNumber}" required>
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">B</span>
+                        </div>
+                        <input type="text" class="form-control" name="${questionNumber}" required>
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">C</span>
+                        </div>
+                        <input type="text" class="form-control" name="${questionNumber}" required>
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">D</span>
+                        </div>
+                        <input type="text" class="form-control" name="${questionNumber}" required>
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">E</span>
+                        </div>
+                        <input type="text" class="form-control" name="${questionNumber}" required>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                        <label class="input-group-text">Answer</label>
+                        </div>
+                        <select class="custom-select" name="${questionNumber}" required>
+                            <option disabled selected value="">-- select --</option>
+                            <option value="a">A</option>
+                            <option value="b">B</option>
+                            <option value="c">C</option>
+                            <option value="d">D</option>
+                            <option value="e">E</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-2">
+                        <button type="button" class="btn btn-info btn-sm" onclick="changeQuestionType(this)" style="background-color: rgb(248, 130, 130);">Multiple Choice</button>
+                    </div>
+                </div>
+            </div>
+        `    
+        shortAnswer.innerHTML = `
+            <div class="question form-group" style="border: 2px dotted gray; padding: 5px;">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text">Question ${questionNumber}</span>
+                    </div>
+                    <textarea class="form-control" name="${questionNumber}" required></textarea>
+                </div>
+
+                <div class="shortAnswer" value="shortAnswer">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text">Answer</span>
+                        </div>
+                        <input type="text" class="form-control" name="${questionNumber}" required>
+                    </div>
+                    <div class="input-group mb-2">
+                        <button type="button" class="btn btn-info btn-sm" onclick="changeQuestionType(this)" style="background-color: rgb(117, 117, 255);">Short Answer</button>
+                    </div>
+                </div>
+            </div>
+        `
+
+        const questionGroup = document.querySelector(".questionGroup")
+        
+        if (e.getAttribute("name") === "multiple") {
+            questionGroup.appendChild(multipleQuestion)
+        } else {
+            questionGroup.appendChild(shortAnswer)
+        }
+        questionNumber++
+    }
+
+    // Change Question Type
+    function changeQuestionType(e) {
+        const question = e.parentNode.parentNode
+        console.log(question)
+        if (question.className.includes("shortAnswer")) {   // Change short answer to multiple choice
+            question.innerHTML = `
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">A</span>
+                    </div>
+                    <input type="text" class="form-control" name="${questionNumber}" required>
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">B</span>
+                    </div>
+                    <input type="text" class="form-control" name="${questionNumber}" required>
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">C</span>
+                    </div>
+                    <input type="text" class="form-control" name="${questionNumber}" required>
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">D</span>
+                    </div>
+                    <input type="text" class="form-control" name="${questionNumber}" required>
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">E</span>
+                    </div>
+                    <input type="text" class="form-control" name="${questionNumber}" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                    <label class="input-group-text">Answer</label>
+                    </div>
+                    <select class="custom-select" name="${questionNumber}" required>
+                        <option disabled selected value="">-- select --</option>
+                        <option value="a">A</option>
+                        <option value="b">B</option>
+                        <option value="c">C</option>
+                        <option value="d">D</option>
+                        <option value="e">E</option>
+                    </select>
+                </div>
+                <div class="input-group mb-2">
+                    <button type="button" class="btn btn-info btn-sm" onclick="changeQuestionType(this)" style="background-color: rgb(248, 130, 130);">Multiple Choice</button>
+                </div>
+            `
+            question.className = "multiple"
+        } else if (question.className.includes("multiple")) { // Change multiple choice to short answer 
+            question.innerHTML = `
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text">Answer</span>
+                    </div>
+                    <input type="text" class="form-control" name="${questionNumber}" required>
+                </div>
+                <div class="input-group mb-2">
+                    <button type="button" class="btn btn-info btn-sm" onclick="changeQuestionType(this)" style="background-color: rgb(117, 117, 255);">Short Answer</button>
+                </div>
+            `
+            question.className = "shortAnswer"
+        } else {
+            console.log("error!")
+        }
+    }
+
+    // Remove last question
+    function removeQuestion() {
+        const questions = document.querySelectorAll(".question")
+
+        if (questions.length > 0){
+            questions[questions.length - 1].remove()
+        }
+        questionNumber--
+    }
+</script>

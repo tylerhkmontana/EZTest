@@ -1,0 +1,164 @@
+
+  <%- include("./partials/courseheader") %>
+
+  <!-- dashboard -->
+  <main role="main" class="col-md-9 ml-sm-auto col-lg-11 px-4">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Edit <%= targetAssignment.assignmentName %></h1>
+    </div>
+    
+    <!-- Alert Message -->
+    <%- include("./partials/messages.ejs") %>
+    
+    <!-- Question Type Window -->
+    <div class="modal fade" id="questionType" tabindex="-1" role="dialog" aria-labelledby="questionType" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Question Type</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                What type of question do you want to create?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" style="background-color: rgb(248, 130, 130);" onclick="addQuestion(this)" data-dismiss="modal" name="multiple">Multiple Choice</button>
+                <button type="button" class="btn btn-primary" style="background-color: rgb(117, 117, 255);" onclick="addQuestion(this)" data-dismiss="modal" name="shortAnswer">Short Answer</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Assignment Information -->
+    <form action="/instructor/course/<%= course._id %>/editAssignment/<%= targetAssignment._id %>" method="POST">
+        <div class="form-group assignment-info">
+          <label>Assignment Name</label>
+          <input type="text" class="form-control" placeholder="ex) Assignment 1" name="assignmentName" value="<%= targetAssignment.assignmentName %>" required>
+        </div>
+        <div class="form-group">
+          <label>Deadline</label>
+          <input type="date" class="form-control" name="deadline" value="<%= targetAssignment.deadline %>" required>
+        </div>
+        
+        <div class="questionGroup">
+            
+            <!-- Questions Will BeCreated Here -->
+            <% targetAssignment.questions.forEach(q => { %>
+                <% if (q.questionType === "multipleChoice") { %>
+                    <div class="question form-group" style="border: 2px dotted gray; padding: 5px;">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text">Question <%= q.questionNumber %></span>
+                            </div>
+                            <textarea class="form-control" aria-label="With textarea" name="<%= q.questionNumber %>"required><%= q.instruction %></textarea>
+                        </div>
+                        
+                        <div class="multiple">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">A</span>
+                                </div>
+                                <input type="text" class="form-control" name="<%= q.questionNumber %>" value="<%= q.choiceA %>" required>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">B</span>
+                                </div>
+                                <input type="text" class="form-control" name="<%= q.questionNumber %>" value="<%= q.choiceB %>" required>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">C</span>
+                                </div>
+                                <input type="text" class="form-control" name="<%= q.questionNumber %>" value="<%= q.choiceC %>" required>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">D</span>
+                                </div>
+                                <input type="text" class="form-control" name="<%= q.questionNumber %>" value="<%= q.choiceD %>" required>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">E</span>
+                                </div>
+                                <input type="text" class="form-control" name="<%= q.questionNumber %>" value="<%= q.choiceE %>" required>
+                            </div>
+        
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <label class="input-group-text">Answer</label>
+                                </div>
+                                <select class="custom-select" name="<%= q.questionNumber %>" required>
+                                    <option disabled value="">-- select --</option>
+                                    <% if (q.answer === "a") {%>
+                                        <option value="a" selected>A</option>
+                                    <% } else { %>
+                                        <option value="a">A</option>
+                                    <% } %>
+                                    <% if (q.answer === "b") {%>
+                                        <option value="b" selected>B</option>
+                                    <% } else { %>
+                                        <option value="b">B</option>
+                                    <% } %>
+                                    <% if (q.answer === "c") {%>
+                                        <option value="c" selected>C</option>
+                                    <% } else { %>
+                                        <option value="c">C</option>
+                                    <% } %>
+                                    <% if (q.answer === "d") {%>
+                                        <option value="d" selected>D</option>
+                                    <% } else { %>
+                                        <option value="d">D</option>
+                                    <% } %>
+                                    <% if (q.answer === "e") {%>
+                                        <option value="e" selected>E</option>
+                                    <% } else { %>
+                                        <option value="e">E</option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="input-group mb-2">
+                                <button type="button" class="btn btn-info btn-sm" onclick="changeQuestionType(this)" style="background-color: rgb(248, 130, 130);">Multiple Choice</button>
+                            </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="question form-group" style="border: 2px dotted gray; padding: 5px;">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text">Question <%= q.questionNumber %></span>
+                            </div>
+                            <textarea class="form-control" name="<%= q.questionNumber %>" required><%= q.instruction %></textarea>
+                        </div>
+        
+                        <div class="shortAnswer" value="shortAnswer">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text">Answer</span>
+                                </div>
+                                <input type="text" class="form-control" name="<%= q.questionNumber %>" value="<%= q.answer %>" required>
+                            </div>
+                            <div class="input-group mb-2">
+                                <button type="button" class="btn btn-info btn-sm" onclick="changeQuestionType(this)" style="background-color: rgb(117, 117, 255);">Short Answer</button>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            <% }) %>
+            
+        </div>
+        <button type="submit" class="btn btn-outline-dark" style="float: right;">Save</button>
+    </form>
+
+      
+  </main>
+
+</div>
+</div>
+
+<%- include("./partials/coursefooter") %>
+<%- include("./partials/newassignmentscript.ejs") %>

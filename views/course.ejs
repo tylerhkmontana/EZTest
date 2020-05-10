@@ -1,80 +1,16 @@
-
-<%- include("./partials/coursestyle.ejs") %>
-<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-
-<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/dashboard"><%= typeof user !="undefined" ? user: "" %></a>
-
-<!-- top navbar -->
-<div class="dropdown">
-  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Courses Resources
-  </a>
-
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <a class="dropdown-item" href="https://tophat.com/" target="_blank">TopHat</a>
-    <a class="dropdown-item" href="https://www.zybooks.com/" target="_blank">zyBooks</a>
-    <a class="dropdown-item" href="https://drive.google.com/drive/folders/1co7vzY9_75cCiuNTHXCGf3pKbpf_TTwC" target="_blank">Course Drive</a>
-    <a class="dropdown-item" href="https://www.w3schools.com/" target="_blank">W3Schools</a>
-  </div>
-</div>
-<ul class="navbar-nav px-3">
-  <li class="nav-item text-nowrap">
-    <a class="nav-link" href="/users/logout">Sign out</a>
-  </li>
-</ul>
-</nav>
-
-<div class="container-fluid">
-<div class="row">
-
-  <!-- side bar menu -->
-  <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-    <div class="sidebar-sticky">
-  
-      <ul class="nav flex-column">
-        
-        <li class="nav-item">
-          <a class="nav-link" href="#">CS 355</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" data-toggle="collapse" href="#collapseExample" onclick="setActive(this)">Assignments</a>
-        </li>
-        <div class="collapse" id="collapseExample">
-          <ul class="list-group">
-            <li class="list-group-item">Assignment 1</li>
-            <li class="list-group-item">Assignment 2</li>
-            <li class="list-group-item">Assignment 3</li>
-            <li class="list-group-item">Assignment 4</li>
-          </ul>
-        </div>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">Grade</a>
-        </li>
-
-      </ul>
-
-    </div>
-  </nav>
+<%- include("./partials/courseheader") %>
 
 
 
   <!-- dashboard -->
+  
   <main role="main" class="col-md-9 ml-sm-auto col-lg-11 px-4">
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-      <h1 class="h2">CS 355</h1>
-    
+      <h1 class="h2"><%= course.courseName %></h1>
     </div>
-    
+    <%- include("./partials/messages.ejs") %>
   </main>
 
-</div>
-</div>
 
-<script>
-  function setActive(e) {
-    e.classList.add("active")
-  }
-</script>
+<%- include("./partials/coursefooter") %>

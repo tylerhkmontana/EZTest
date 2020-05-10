@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Course = require("../models/Course")
 const CourseParticipant = require("../models/CourseParticipant")
+const Assignment = require("../models/Assignment")
 const { ensureAuthenticated } = require("../config/auth");
 
 // login as a student
@@ -44,8 +45,8 @@ router.get("/dashboard", ensureAuthenticated, (req, res) =>
 );
 
 // Handle drop course
-router.post("/course/:id", (req, res) => {
-  const courseId = req.params.id
+router.post("/course/:courseid", (req, res) => {
+  const courseId = req.params.courseid
   const studentId = req.user._id
   CourseParticipant.deleteOne({courseId, studentId }, (err, result) => {
     if (err) {
@@ -53,6 +54,55 @@ router.post("/course/:id", (req, res) => {
     }
     req.flash("success_msg", "You successfully dropped the course.")
     res.redirect("/student/dashboard")
+  })
+})
+
+// Enter Course
+router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
+  const courseId = req.params.courseid
+  Course.findById(courseId, (err, course) => {
+    if (err) {
+      console.log(err)
+    }
+    Assignment.find({courseId}, (err, assignments) => {
+      if (err) {
+        console.log(err)
+      }
+      res.render("course", {
+        course: course,
+        user: req.user.name,
+        usertype: req.user.usertype,
+        assignments: assignments
+      })
+    })
+  })
+})
+
+// Assignment Page
+router.get("/course/:courseid/assignment/:assignmentid", (req, res) => {
+  const courseId = req.params.courseid
+  const assignmentId = req.params.assignmentid
+  Course.findById(courseId, (err, course) => {
+    if (err) {
+      console.log("err1")
+    }
+    Assignment.find({courseId}, (err, assignments) => {
+      if (err) {
+        console.log("err2")
+      }
+      Assignment.findById(assignmentId, (err, assignment) => {
+        if (err) {
+          console.log("err3")
+        }
+        res.render("assignment", {
+          course: course,
+          user: req.user.name,
+          usertype: req.user.usertype,
+          assignments: assignments,
+          targetAssignment: assignment
+        })
+      })
+    })
   })
 })
 

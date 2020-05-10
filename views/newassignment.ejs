@@ -1,0 +1,68 @@
+
+  <%- include("./partials/courseheader") %>
+
+  <!-- dashboard -->
+  <main role="main" class="col-md-9 ml-sm-auto col-lg-11 px-4">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Create Assignment</h1>
+    </div>
+    
+    <!-- Alert Message -->
+    <%- include("./partials/messages.ejs") %>
+
+    <!-- Create Question Button -->
+    <button type="button" class="btn btn-success btn-sm" style="float: right;" data-toggle="modal" data-target="#questionType">
+        Create Question    
+    </button><br>
+    
+    <!-- Question Type Window -->
+    <div class="modal fade" id="questionType" tabindex="-1" role="dialog" aria-labelledby="questionType" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Question Type</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                What type of question do you want to create?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" style="background-color: rgb(248, 130, 130);" onclick="addQuestion(this)" data-dismiss="modal" name="multiple">Multiple Choice</button>
+                <button type="button" class="btn btn-primary" style="background-color: rgb(117, 117, 255);" onclick="addQuestion(this)" data-dismiss="modal" name="shortAnswer">Short Answer</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Assignment Information -->
+    <form action="/instructor/course/<%= course._id %>/newAssignment" method="POST">
+        <div class="form-group assignment-info">
+          <label>Assignment Name</label>
+          <input type="text" class="form-control" placeholder="ex) Assignment 1" name="assignmentName" required>
+        </div>
+        <div class="form-group">
+          <label>Deadline</label>
+          <input type="date" class="form-control" name="deadline" required>
+        </div>
+        
+        <div class="questionGroup">
+            
+            <!-- Questions Will BeCreated Here -->
+           
+            
+        </div>
+        <button type="button" class="btn btn-danger btn-sm" style="float: left;" onclick="removeQuestion()">Remove Question</button>
+        <button type="submit" class="btn btn-outline-dark" style="float: right;">Save</button>
+    </form>
+
+      
+  </main>
+
+</div>
+</div>
+
+<%- include("./partials/coursefooter") %>
+<%- include("./partials/newassignmentscript.ejs") %>
