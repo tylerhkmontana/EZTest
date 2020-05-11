@@ -7,15 +7,22 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <h1 class="h2"><%= targetAssignment.assignmentName %></h1> 
       <p style="float:right;">
-        Due: <%= targetAssignment.deadline.getMonth() + 1 %>/<%= targetAssignment.deadline.getDate() %>/<%= targetAssignment.deadline.getFullYear() %> 11:59 PM
+        Due: <%= targetAssignment.deadline.getMonth() + 1 %>/<%= targetAssignment.deadline.getDate() %>/<%= targetAssignment.deadline.getFullYear() %> 
+        <% if (targetAssignment.deadline.getHours() > 11){ %>
+            <%= targetAssignment.deadline.getHours() - 12 %>:<%= targetAssignment.deadline.getMinutes() %> PM
+        <% } else { %>
+            <%= targetAssignment.deadline.getHours() %>:<%= targetAssignment.deadline.getMinutes() %> AM
+        <% } %>
      </p>
     </div>
+    <%- include("./partials/messages.ejs") %>
 
-    <!-- Delete Assignment -->
+    <!-- Instructor -->
     <% if (usertype === "Instructor") { %>
     
+        <!-- Delete Assignment -->
         <form action="/instructor/course/<%= course._id %>/deleteAssignment/<%= targetAssignment._id %>" method="POST">
-            <!-- Drop button -->
+            <!-- Delete button -->
             <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#dropWindow" style="float: right;">
                 Delete
             </button>
@@ -43,67 +50,193 @@
         </form>
         <a class="btn btn-outline-primary btn-sm" href="/instructor/course/<%= course._id %>/editAssignment/<%= targetAssignment._id %>" role="button" style="float: right;">Edit</a>
         <br><br>
-    <% } %>
-
-    <% targetAssignment.questions.forEach(q => { %>
-        <% if (q.questionType === "shortAnswer") { %>
-            <div style="border:dotted 2px rgba(51, 50, 50, 0.342); padding: 10px;">
-                <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-sm">Answer</span>
+        <% targetAssignment.questions.forEach(q => { %>
+            <% if (q.questionType === "shortAnswer") { %>
+                
+                <div style="border:dotted 2px rgba(51, 50, 50, 0.342); padding: 10px;">
+                    <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Answer</span>
+                        </div>
+                        <input type="text" class="form-control" name=<%= q.questionNumber %>>
                     </div>
-                    <input type="text" class="form-control" name=<%= q.questionNumber %>>
-                </div>
-            </div><br>
-        <% } else { %>
-            <div style="border:dotted 2px rgba(51, 50, 50, 0.342); padding: 10px;">
-                <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
-            
-                <div class="input-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceA" value="a">
-                        <label class="form-check-label" for="choiceA">
-                            <%= q.choiceA %>
-                        </label>
+                </div><br>
+            <% } else { %>
+                <div style="border:dotted 2px rgba(51, 50, 50, 0.342); padding: 10px;">
+                    <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
+                
+                    <div class="input-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceA" value="a">
+                            <label class="form-check-label" for="choiceA">
+                                <%= q.choiceA %>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceB" value="b">
+                            <label class="form-check-label" for="choiceB">
+                                <%= q.choiceB %>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceC" value="c">
+                            <label class="form-check-label" for="choiceC">
+                                <%= q.choiceC %>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d">
+                            <label class="form-check-label" for="choiceD">
+                                <%= q.choiceD %>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d">
+                            <label class="form-check-label" for="choiceD">
+                                <%= q.choiceE %>
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <div class="input-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceB" value="b">
-                        <label class="form-check-label" for="choiceB">
-                            <%= q.choiceB %>
-                        </label>
-                    </div>
+                <br>
+            <% } %>
+        <% }) %>
+        <!-- Close up the assignment before the deadline -->
+        <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#closeAssignment" style="float: right;">
+            Close
+        </button>
+          
+          <!-- Confrim submit window -->
+          <div class="modal fade" id="closeAssignment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Alert</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                 </div>
-                <div class="input-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceC" value="c">
-                        <label class="form-check-label" for="choiceC">
-                            <%= q.choiceC %>
-                        </label>
-                    </div>
+                <div class="modal-body">
+                  Once you close the assignment, your students will not be able
+                  to submit their assignment anymore and you can't turn it back. Are you sure to close this assignment?
                 </div>
-                <div class="input-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d">
-                        <label class="form-check-label" for="choiceD">
-                            <%= q.choiceD %>
-                        </label>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form action="/instructor/course/<%= course._id %>/closeassignment/<%= targetAssignment._id %>" method="POST">
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </form> 
                 </div>
-                <div class="input-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d">
-                        <label class="form-check-label" for="choiceD">
-                            <%= q.choiceE %>
-                        </label>
-                    </div>
-                </div>
+              </div>
             </div>
-            <br>
+          </div>
+
+    <!-- Student -->
+    <% } else { %>
+        <% if (submitted){ %>
+            <div class="alert alert-info" role="alert">
+                This Assignment has been submitted
+            </div>
         <% } %>
-    <% }) %>
+        
+        <form action="/student/course/<%= course._id %>/assignment/<%= targetAssignment._id %>/submitAssignment" method="POST">
+            <% targetAssignment.questions.forEach(q => { %>
+                <% if (q.questionType === "shortAnswer") { %>
+                    
+                    <div style="border:dotted 2px rgba(51, 50, 50, 0.342); padding: 10px;">
+                        <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Answer</span>
+                            </div>
+                            <input type="text" class="form-control" name=<%= q.questionNumber %> required>
+                        </div>
+                        <p style="color: red;">*Make sure there is no unintended whitespace in your answer*</p>
+                    </div><br>
+                <% } else { %>
+                    <div style="border:dotted 2px rgba(51, 50, 50, 0.342); padding: 10px;">
+                        <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
+                    
+                        <div class="input-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceA" value="a" required>
+                                <label class="form-check-label" for="choiceA">
+                                    <%= q.choiceA %>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceB" value="b">
+                                <label class="form-check-label" for="choiceB">
+                                    <%= q.choiceB %>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceC" value="c">
+                                <label class="form-check-label" for="choiceC">
+                                    <%= q.choiceC %>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d">
+                                <label class="form-check-label" for="choiceD">
+                                    <%= q.choiceD %>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d">
+                                <label class="form-check-label" for="choiceD">
+                                    <%= q.choiceE %>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                <% } %>
+            <% }) %>
+            <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#submitAssignment" style="float: right;">
+                Submit
+            </button>
+              
+              <!-- Confrim submit window -->
+              <div class="modal fade" id="submitAssignment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Alert</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Once you submit the assignment, you cannot re-submit it. Are you sure to submit this assignment?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Confirm</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </form>
+    <% } %>
+        
+
     
   </main>
 

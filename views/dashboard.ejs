@@ -204,11 +204,12 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <% if (usertype === "Student"){ %>
                       <div class="btn-group">
-                        <a href="/student/course/<%= course._id %>" class="btn btn-sm btn-outline-secondary">Enter</a>
+                        
                      
                         <!-- Course Drop Button -->
                         <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#confirmDrop">Drop</button>
-                  
+                        <a href="/student/course/<%= course._id %>" class="btn btn-sm btn-outline-dark" style="float: left;">Enter</a>
+
                         <!-- Confirm Widnow -->
                         <div class="modal fade" id="confirmDrop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                           <div class="modal-dialog" role="document">
@@ -225,7 +226,7 @@
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <form action="/student/course/<%= course._id %>" method="POST">
-                                  <button type="submit" class="btn btn-sm btn-outline-danger">Drop</a>
+                                  <button type="submit" class="btn btn-sm btn-outline-danger" style="float: left;">Drop</a>
                                 </form>
                               </div>
                             </div>
@@ -234,11 +235,11 @@
                       </div>
                     <% } else { %>
                       <div class="btn-group">
-                        <a href="/instructor/course/<%= course._id %>" class="btn btn-sm btn-outline-secondary">Enter</a>
-
+                        
+                        
                         <!-- Course Delete Button -->
-                        <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#confirmDelete">Delete</button>
-                  
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#confirmDelete" style="float: right;">Delete</button>
+                        <a href="/instructor/course/<%= course._id %>" class="btn btn-sm btn-outline-dark" style="float: left;">Enter</a>
                         <!-- Confirm Widnow -->
                         <div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                           <div class="modal-dialog" role="document">
@@ -262,6 +263,7 @@
                           </div>
                         </div>
                       </div>
+                      
                       <% } %>
                       </div>
                   </div>

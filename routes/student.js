@@ -3,11 +3,12 @@ const router = express.Router();
 const Course = require("../models/Course")
 const CourseParticipant = require("../models/CourseParticipant")
 const Assignment = require("../models/Assignment")
+const AssignmentParticipant = require("../models/AssignmentParticipant")
 const { ensureAuthenticated } = require("../config/auth");
 
 // login as a student
 router.get("/dashboard", ensureAuthenticated, (req, res) =>
-  // Find all the courseParticipant informations associated with the user_id
+  // Find the courseParticipant informations associated with the user_id
   CourseParticipant.find({ studentId: req.user._id },(err, participatingCourses) => {
     if (err) {
       console.log(err)
@@ -44,19 +45,6 @@ router.get("/dashboard", ensureAuthenticated, (req, res) =>
   })  
 );
 
-// Handle drop course
-router.post("/course/:courseid", (req, res) => {
-  const courseId = req.params.courseid
-  const studentId = req.user._id
-  CourseParticipant.deleteOne({courseId, studentId }, (err, result) => {
-    if (err) {
-      console.log(err)
-    }
-    req.flash("success_msg", "You successfully dropped the course.")
-    res.redirect("/student/dashboard")
-  })
-})
-
 // Enter Course
 router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
   const courseId = req.params.courseid
@@ -78,34 +66,117 @@ router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
   })
 })
 
-// Assignment Page
-router.get("/course/:courseid/assignment/:assignmentid", (req, res) => {
+// Current Assignment Page
+router.get("/course/:courseid/assignment/:assignmentid", ensureAuthenticated ,(req, res) => {
   const courseId = req.params.courseid
   const assignmentId = req.params.assignmentid
   Course.findById(courseId, (err, course) => {
     if (err) {
-      console.log("err1")
+      console.log(err)
     }
-    Assignment.find({courseId}, (err, assignments) => {
+    Assignment.find({courseId}, (err, assignmentList) => { // for the menu
       if (err) {
-        console.log("err2")
+        console.log(err)
       }
-      Assignment.findById(assignmentId, (err, assignment) => {
+      AssignmentParticipant.findOne({ studentId: req.user._id, assignmentId: assignmentId }, (err, participant) => {
         if (err) {
-          console.log("err3")
+          console.log(err)
         }
-        res.render("assignment", {
-          course: course,
-          user: req.user.name,
-          usertype: req.user.usertype,
-          assignments: assignments,
-          targetAssignment: assignment
-        })
+
+        // Check if the student has submitted the target assignment already
+        if (participant) {
+          Assignment.findById(assignmentId, (err, assignment) => { // for the current page
+            if (err) {
+              console.log(err)
+            }
+
+            res.render("assignment", {
+              course: course,
+              user: req.user.name,
+              usertype: req.user.usertype,
+              assignments: assignmentList,
+              targetAssignment: assignment,
+              submitted: true
+            })
+          })
+        } else {
+          Assignment.findById(assignmentId, (err, assignment) => { // for the current page
+            if (err) {
+              console.log(err)
+            }
+          
+            res.render("assignment", {
+              course: course,
+              user: req.user.name,
+              usertype: req.user.usertype,
+              assignments: assignmentList,
+              targetAssignment: assignment,
+              submitted: false
+            })
+          })
+        }
       })
     })
   })
 })
 
+// Past Assignment Page
+router.get("/course/:courseid/pastassignment/:assignmentid", ensureAuthenticated ,(req, res) => {
+  const courseId = req.params.courseid
+  const assignmentId = req.params.assignmentid
+  Course.findById(courseId, (err, course) => {
+    if (err) {
+      console.log(err)
+    }
+    Assignment.find({courseId}, (err, assignmentList) => { // for the menu
+      if (err) {
+        console.log(err)
+      }
+      AssignmentParticipant.findOne({ studentId: req.user._id, assignmentId: assignmentId }, (err, participant) => {
+        if (err) {
+          console.log(err)
+        }
+
+        if (participant) {
+          Assignment.findById(assignmentId, (err, assignment) => { // for the current page
+            if (err) {
+              console.log(err)
+            }
+
+            console.log(participant.answers)
+            res.render("pastassignment", {
+              course: course,
+              user: req.user.name,
+              usertype: req.user.usertype,
+              assignments: assignmentList,
+              targetAssignment: assignment,
+              submitted: true,
+              studentAnswers: participant.answers
+            })
+          })
+        } else {
+          Assignment.findById(assignmentId, (err, assignment) => { // for the current page
+            if (err) {
+              console.log(err)
+            }
+          
+            res.render("pastassignment", {
+              course: course,
+              user: req.user.name,
+              usertype: req.user.usertype,
+              assignments: assignmentList,
+              targetAssignment: assignment,
+              submitted: false,
+              studentAnswers: []
+            })
+          })
+        }
+      })
+    })
+  })
+})
+
+// Enter Course
 router.post("/dashboard", (req, res) => {
   const courseCode = req.body.courseCode
 
@@ -155,5 +226,71 @@ router.post("/dashboard", (req, res) => {
     })
   }  
 })
+
+  // Handle drop course
+router.post("/course/:courseid", (req, res) => {
+  const courseId = req.params.courseid
+  const studentId = req.user._id
+  CourseParticipant.deleteOne({courseId, studentId }, (err, result) => {
+    if (err) {
+      console.log(err)
+    }
+    req.flash("success_msg", "You successfully dropped the course.")
+    res.redirect("/student/dashboard")
+  })
+})
+
+// Submit Assignment
+router.post("/course/:courseid/assignment/:assignmentid/submitAssignment", (req, res) => {
+  const courseId = req.params.courseid
+  const assignmentId = req.params.assignmentid
+  const studentId = req.user._id
+  const studentAnswers = Object.values(req.body).map(a => {
+    return a.toLowerCase() // make student answers case insensitive
+  })
+  let correctCount = 0
+
+  // Find the assginment with the given assignmentid
+  Assignment.findById(assignmentId, (err, assignment) => {
+    if (err) {
+      console.log(err)
+    }
+    let correctAnswers = []
+    assignment.questions.forEach(q => {
+      correctAnswers.push(q.answer)
+    })
+
+    correctAnswers.forEach((ans, index) => {
+      if(ans == studentAnswers[index]){
+        correctCount++
+      }
+    })
+
+    AssignmentParticipant.findOne({ studentId: studentId, assignmentId: assignmentId }, (err, student) => {
+      if (err) {
+        console.log(err)
+      }
+      // Check if a student has already submitted this assignment or not
+      if (student) {
+        req.flash("error_msg", "You've already submitted this assignment/test")
+        res.redirect(`/student/course/${courseId}/assignment/${assignmentId}`)
+      } else {
+        const newParticipant = AssignmentParticipant({
+          assignmentId: assignmentId,
+          studentId: studentId,
+          answers: studentAnswers,
+          corrects: correctCount
+        })
+        newParticipant.save()
+         .then(result => {
+           req.flash("success_msg", "You successfully submitted your assignment")
+           res.redirect(`/student/course/${courseId}`)
+         })
+         .catch(err => console.log(err))
+      }
+    })
+  })
+})
+
 
 module.exports = router

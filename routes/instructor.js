@@ -3,6 +3,7 @@ const router = express.Router();
 const Course = require("../models/Course")
 const CourseParticipant = require("../models/CourseParticipant")
 const Assignment = require("../models/Assignment")
+const AssignmentParticipant = require("../models/AssignmentParticipant")
 const { ensureAuthenticated } = require("../config/auth");
 
 // login as an instructor
@@ -90,6 +91,7 @@ router.get("/course/:courseid/assignment/:assignmentid", ensureAuthenticated ,(r
   })
 })
 
+// Edit Assignment Page
 router.get("/course/:courseid/editAssignment/:assignmentid", ensureAuthenticated ,(req, res) => {
   const courseId = req.params.courseid
   const assignmentId = req.params.assignmentid
@@ -170,7 +172,7 @@ router.post("/dashboard", (req, res) => {
 // Add New Assignment
 router.post("/course/:courseid/newAssignment", (req, res) => {
   const assignmentName = req.body.assignmentName
-  const deadline = new Date(`${req.body.deadline}T00:00`)
+  const deadline = new Date(`${req.body.deadline}T23:59`)
   const data = req.body
   const courseId = req.params.courseid
 
@@ -237,15 +239,22 @@ router.post("/course/:courseid/deleteAssignment/:assignmentid", (req, res) => {
     if (err) {
       console.log(err)
     }
-    req.flash("success_msg", "The assignment has been successfully deleted")
-    res.redirect(`/instructor/course/${courseId}`)
+
+    // Drop all the assignment participants
+    AssignmentParticipant.deleteMany({ assignmentId }, (err, result) => {
+      if (err) {
+        console.log(err)
+      }
+      req.flash("success_msg", "The assignment has been successfully deleted")
+      res.redirect(`/instructor/course/${courseId}`)
+    })
   })
 })
 
 // Edit Assignment
 router.post("/course/:courseid/editAssignment/:assignmentid", (req, res) => {
   const assignmentName = req.body.assignmentName
-  const deadline = new Date(`${req.body.deadline}T00:00`)
+  const deadline = new Date(`${req.body.deadline}T23:59`)
   const data = req.body
   const courseId = req.params.courseid
   const assignmentId = req.params.assignmentid
@@ -292,10 +301,31 @@ router.post("/course/:courseid/editAssignment/:assignmentid", (req, res) => {
     if (err) {
       console.log(err)
     }
-    req.flash("success_msg", "The assignment has been successfully edited")
+
+    // Drop all the assignment participants
+    AssignmentParticipant.deleteMany({ assignmentId }, (err, result) => {
+      if (err) {
+        console.log(err)
+      }
+      req.flash("success_msg", "The assignment has been successfully edited")
+      res.redirect(`/instructor/course/${courseId}`)
+    })
+  })
+})
+
+// Close Assignment
+router.post("/course/:courseid/closeassignment/:assignmentid", (req, res) => {
+  const courseId = req.params.courseid
+  const assignmentId = req.params.assignmentid
+  Assignment.findOneAndUpdate({_id: assignmentId}, {
+    status: "close"
+  }, (err, result) => {
+    if (err) {
+      console.log(err)
+    }
+    req.flash("success_msg", "The assignment has been closed")
     res.redirect(`/instructor/course/${courseId}`)
   })
-  
 })
 
 module.exports = router

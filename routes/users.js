@@ -75,7 +75,7 @@ router.post("/register", (req, res) => {
     });
   } else {
     // Validation passed
-    User.findOne({ email: email })
+    User.findOne({ email: email.toLowerCase() })
       .then((user) => {
         if (user) {
           // User exists
@@ -122,7 +122,7 @@ router.post("/register", (req, res) => {
 
 // Login Handle
 router.post("/login", (req, res, next) => {
-  User.findOne({email: req.body.email})
+  User.findOne({email: req.body.email.toLowerCase()})
    .then(user => {
      if(user){
        if(user.usertype === "Instructor"){

@@ -1,0 +1,300 @@
+<%- include("./partials/courseheader") %>
+
+
+<!-- dashboard -->
+<main role="main" class="col-md-9 ml-sm-auto col-lg-11 px-4">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2"><%= targetAssignment.assignmentName %></h1> 
+      <p style="float:right;">
+        Due: <%= targetAssignment.deadline.getMonth() + 1 %>/<%= targetAssignment.deadline.getDate() %>/<%= targetAssignment.deadline.getFullYear() %> 
+        <% if (targetAssignment.deadline.getHours() > 11){ %>
+            <%= targetAssignment.deadline.getHours() - 12 %>:<%= targetAssignment.deadline.getMinutes() %> PM
+        <% } else { %>
+            <%= targetAssignment.deadline.getHours() %>:<%= targetAssignment.deadline.getMinutes() %> AM
+        <% } %>
+     </p>
+    </div>
+    <%- include("./partials/messages.ejs") %>
+
+    <!-- Instructor -->
+    <% if (usertype === "Instructor") { %>
+    
+        <!-- Delete Assignment -->
+        <form action="/instructor/course/<%= course._id %>/deleteAssignment/<%= targetAssignment._id %>" method="POST">
+            <!-- Delete button -->
+            <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#dropWindow" style="float: right;">
+                Delete
+            </button>
+            
+            <!-- Confirm window -->
+            <div class="modal fade" id="dropWindow" tabindex="-1" role="dialog"aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Alert</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure to drop <span class="badge badge-pill badge-info"><%= targetAssignment.assignmentName %></span> ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Confirm</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </form>
+        <br><br>
+        <% targetAssignment.questions.forEach(q => { %>
+            <% if (q.questionType === "shortAnswer") { %>
+                
+                <div style="border:dotted 2px rgba(51, 50, 50, 0.342); padding: 10px;">
+                    <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Answer</span>
+                        </div>
+                        <input type="text" class="form-control" name=<%= q.questionNumber %> value="<%= q.answer %>" disabled>
+                    </div>
+                </div><br>
+            <% } else { %>
+                <div style="border:dotted 2px rgba(51, 50, 50, 0.342); padding: 10px;">
+                    <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
+                
+                    <div class="input-group">
+                        <div class="form-check">
+                            <% if (q.answer === "a"){ %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceA" value="a" disabled>
+                                <label class="form-check-label" for="choiceA" style="color: rgb(42, 194, 75);">
+                                    <%= q.choiceA %>
+                                </label>
+                            <% } else { %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceA" value="a" disabled>
+                                <label class="form-check-label" for="choiceA">
+                                    <%= q.choiceA %>
+                                </label>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-check">
+                            <% if (q.answer === "b"){ %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceB" value="b" disabled>
+                                <label class="form-check-label" for="choiceA" style="color: rgb(42, 194, 75);">
+                                    <%= q.choiceB %>
+                                </label>
+                            <% } else { %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceB" value="b" disabled>
+                                <label class="form-check-label" for="choiceB">
+                                    <%= q.choiceB %>
+                                </label>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-check">
+                            <% if (q.answer === "c"){ %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceC" value="c" disabled>
+                                <label class="form-check-label" for="choiceA" style="color: rgb(42, 194, 75);">
+                                    <%= q.choiceC %>
+                                </label>
+                            <% } else { %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceC" value="c" disabled>
+                                <label class="form-check-label" for="choiceA">
+                                    <%= q.choiceC %>
+                                </label>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-check">
+                            <% if (q.answer === "d"){ %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d" disabled>
+                                <label class="form-check-label" for="choiceA" style="color: rgb(42, 194, 75);">
+                                    <%= q.choiceD %>
+                                </label>
+                            <% } else { %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d" disabled>
+                                <label class="form-check-label" for="choiceA">
+                                    <%= q.choiceD %>
+                                </label>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-check">
+                            <% if (q.answer === "e"){ %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceE" value="e" disabled>
+                                <label class="form-check-label" for="choiceA" style="color: rgb(42, 194, 75);">
+                                    <%= q.choiceE %>
+                                </label>
+                            <% } else { %>
+                                <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceE" value="e" disabled>
+                                <label class="form-check-label" for="choiceA">
+                                    <%= q.choiceE %>
+                                </label>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            <% } %>
+        <% }) %>
+
+
+
+    <!-- Student -->
+    <% } else { %>
+        <% if (submitted){ %>
+            <div class="alert alert-info" role="alert">
+                This Assignment has been submitted
+            </div>
+        <% } %>
+        
+            <% targetAssignment.questions.forEach((q, i) => { %>
+                <% if (q.questionType === "shortAnswer") { %>
+                    <!-- Correct: green Wrong: red -->
+
+                    <% if (q.answer === (studentAnswers.length > 0 ? studentAnswers[i] : " ")){ %>
+                        <div style="border:dotted 2px rgb(42, 194, 75); padding: 10px;">
+                    <% } else { %>
+                        <div style="border:dotted 2px rgb(233, 46, 46); padding: 10px;">
+                    <% } %>     
+                        <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Answer</span>
+                            </div>
+                            <input type="text" class="form-control" name=<%= q.questionNumber %> value="<%= q.answer %>" disabled>
+                        </div>
+                        <% if (q.answer !== (studentAnswers.length > 0 ? studentAnswers[i] : " ")){ %>
+                            <p style="color: red;">Your answer: <%= studentAnswers[i] %></p>
+                        <% } %>
+                    </div><br>
+                <% } else { %>
+                    <!-- Correct: green Wrong: red -->
+
+                    <% if (q.answer === (studentAnswers.length > 0 ? studentAnswers[i] : " ")){ %>
+                        <div style="border:dotted 2px rgb(42, 194, 75); padding: 10px;">
+                    <% } else { %>
+                        <div style="border:dotted 2px rgb(233, 46, 46); padding: 10px;">
+                    <% } %>                           
+                    <p><span class="badge badge-pill badge-dark">Q. <%= q.questionNumber %></span> <%= q.instruction %></p>
+                    
+                        <div class="input-group">
+                            <div class="form-check">
+                                <% if (q.answer === "a") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceA" value="a" disabled>
+                                    <label class="form-check-label" for="choiceA" style="color: rgb(42, 194, 75);">
+                                        <%= q.choiceA %> --correct answer
+                                    </label>
+                                <% } else if ((studentAnswers.length > 0 ? studentAnswers[i] : " ") === "a" && q.answer !== "a") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceA" value="a" disabled> 
+                                    <label class="form-check-label" for="choiceA" style="color: rgb(233, 46, 46);">
+                                        <%= q.choiceA %> --your answer
+                                    </label>
+                                <% } else { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceA" value="a" disabled>
+                                    <label class="form-check-label" for="choiceA">
+                                        <%= q.choiceA %>
+                                    </label>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check">
+                                <% if (q.answer === "b") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceB" value="b" disabled>
+                                    <label class="form-check-label" for="choiceB" style="color: rgb(42, 194, 75);">
+                                        <%= q.choiceB %> --correct answer
+                                    </label>
+                                <% } else if ((studentAnswers.length > 0 ? studentAnswers[i] : " ") === "b" && q.answer !== "b") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceB" value="b" disabled> 
+                                    <label class="form-check-label" for="choiceB" style="color: rgb(233, 46, 46);">
+                                        <%= q.choiceB %> --your answer
+                                    </label>
+                                <% } else { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceB" value="b" disabled>
+                                    <label class="form-check-label" for="choiceB">
+                                        <%= q.choiceB %>
+                                    </label>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check">
+                                <% if (q.answer === "c") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceC" value="c" disabled>
+                                    <label class="form-check-label" for="choiceC" style="color: rgb(42, 194, 75);">
+                                        <%= q.choiceC %> --correct answer
+                                    </label>
+                                <% } else if ((studentAnswers.length > 0 ? studentAnswers[i] : " ") === "c" && q.answer !== "c") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceC" value="c" disabled> 
+                                    <label class="form-check-label" for="choiceC" style="color: rgb(233, 46, 46);">
+                                        <%= q.choiceC %> --your answer
+                                    </label>
+                                <% } else { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceC" value="c" disabled>
+                                    <label class="form-check-label" for="choiceC">
+                                        <%= q.choiceC %>
+                                    </label>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check">
+                                <% if (q.answer === "d") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d" disabled>
+                                    <label class="form-check-label" for="choiceD" style="color: rgb(42, 194, 75);">
+                                        <%= q.choiceD %> --correct answer
+                                    </label>
+                                <% } else if ((studentAnswers.length > 0 ? studentAnswers[i] : " ") === "d" && q.answer !== "d") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d" disabled> 
+                                    <label class="form-check-label" for="choiceD" style="color: rgb(233, 46, 46);">
+                                        <%= q.choiceD %> --your answer
+                                    </label>
+                                <% } else { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceD" value="d" disabled>
+                                    <label class="form-check-label" for="choiceD">
+                                        <%= q.choiceD %>
+                                    </label>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check">
+                                <% if (q.answer === "e") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceE" value="e" disabled>
+                                    <label class="form-check-label" for="choiceE" style="color: rgb(42, 194, 75);">
+                                        <%= q.choiceE %> --correct answer
+                                    </label>
+                                <% } else if ((studentAnswers.length > 0 ? studentAnswers[i] : " ") === "e" && q.answer !== "e") { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceE" value="e" disabled> 
+                                    <label class="form-check-label" for="choiceE" style="color: rgb(233, 46, 46);">
+                                        <%= q.choiceE %> --your answer
+                                    </label>
+                                <% } else { %>
+                                    <input class="form-check-input" type="radio" name=<%= q.questionNumber %> id="choiceE" value="e" disabled>
+                                    <label class="form-check-label" for="choiceE">
+                                        <%= q.choiceE %>
+                                    </label>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                <% } %>
+            <% }) %>
+    <% } %>
+        
+
+    
+  </main>
+
+
+
+<%- include("./partials/coursefooter") %>

@@ -62,10 +62,6 @@ QuestionParticipant = {
 
 
 
-* Compare deadline and current date, and separate previous and current assignment.
-
-4. An instructor should be able to see enrolled students' info inside the course page
-6. A student should be able to solve the assignment assigned to the course that he enrolled in
 7. A student should be able to see his grade on the assignment that he submitted
 8. An instructor should be able to see how his students doing with the course
 9. Additional features may be added (Course announcement, Edit Assignment, Deadline, etc..)

@@ -14,7 +14,7 @@
                     <textarea class="form-control" aria-label="With textarea" name="${questionNumber}" required></textarea>
                 </div>
                 
-                <div class="multiple">
+                <div class="multiple" id="${questionNumber}">
                     <div class="input-group input-group-sm mb-3">
                         <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-sm">A</span>
@@ -74,7 +74,7 @@
                     <textarea class="form-control" name="${questionNumber}" required></textarea>
                 </div>
 
-                <div class="shortAnswer" value="shortAnswer">
+                <div class="shortAnswer" value="shortAnswer" id="${questionNumber}">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                         <span class="input-group-text">Answer</span>
@@ -101,6 +101,7 @@
     // Change Question Type
     function changeQuestionType(e) {
         const question = e.parentNode.parentNode
+        const currentQNumber = e.parentNode.parentNode.getAttribute("id")
         console.log(question)
         if (question.className.includes("shortAnswer")) {   // Change short answer to multiple choice
             question.innerHTML = `
@@ -108,38 +109,38 @@
                     <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">A</span>
                     </div>
-                    <input type="text" class="form-control" name="${questionNumber}" required>
+                    <input type="text" class="form-control" name="${currentQNumber}" required>
                 </div>
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">B</span>
                     </div>
-                    <input type="text" class="form-control" name="${questionNumber}" required>
+                    <input type="text" class="form-control" name="${currentQNumber}" required>
                 </div>
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">C</span>
                     </div>
-                    <input type="text" class="form-control" name="${questionNumber}" required>
+                    <input type="text" class="form-control" name="${currentQNumber}" required>
                 </div>
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">D</span>
                     </div>
-                    <input type="text" class="form-control" name="${questionNumber}" required>
+                    <input type="text" class="form-control" name="${currentQNumber}" required>
                 </div>
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">E</span>
                     </div>
-                    <input type="text" class="form-control" name="${questionNumber}" required>
+                    <input type="text" class="form-control" name="${currentQNumber}" required>
                 </div>
 
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                     <label class="input-group-text">Answer</label>
                     </div>
-                    <select class="custom-select" name="${questionNumber}" required>
+                    <select class="custom-select" name="${currentQNumber}" required>
                         <option disabled selected value="">-- select --</option>
                         <option value="a">A</option>
                         <option value="b">B</option>
@@ -159,7 +160,7 @@
                     <div class="input-group-prepend">
                     <span class="input-group-text">Answer</span>
                     </div>
-                    <input type="text" class="form-control" name="${questionNumber}" required>
+                    <input type="text" class="form-control" name="${currentQNumber}" required>
                 </div>
                 <div class="input-group mb-2">
                     <button type="button" class="btn btn-info btn-sm" onclick="changeQuestionType(this)" style="background-color: rgb(117, 117, 255);">Short Answer</button>
