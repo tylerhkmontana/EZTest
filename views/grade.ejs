@@ -1,0 +1,99 @@
+<%- include("./partials/courseheader") %>
+
+
+
+  <!-- dashboard -->
+  
+  <main role="main" class="col-md-9 ml-sm-auto col-lg-11 px-4">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Grade</h1>
+    </div>
+
+    <!-- Student User -->
+    <% if (usertype === "Student") {%>
+        <% if (gradedAssignments.length > 0) { %>
+            <p style="float: right;font-size: 1.5em;"><span class="badge badge-success badge-lg badge-pill">
+                Total Grades: <%= accumulativeCorrects %>/<%= accumulativePoints %> 
+                (<%= (accumulativeCorrects/accumulativePoints*100).toFixed(2) %>%)
+            </span></p>
+            <!-- Grade Table -->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Assignment Name</th>
+                    <th scope="col">Due Date</th>
+                    <th scope="col">Total Points</th>
+                    <th scope="col">Grade(%)</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <% gradedAssignments.forEach(ga => { %>
+                        <tr>
+                            <th scope="col"><%= ga.assignmentName %></th>
+                            <td scope="col">
+                                <%= ga.deadline.getMonth() + 1 %>/<%= ga.deadline.getDate() %>/<%= ga.deadline.getFullYear() %>
+                            </td>
+                            <td scope="col"><%= ga.corrects %>/<%= ga.totalPoints %></td>
+                            <td scope="col"><%= (ga.corrects/ga.totalPoints*100).toFixed(2) %>%</td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <div class="alert alert-warning" role="alert">
+                There is no graded assignment in this course yet
+            </div>
+        <% } %>
+
+
+    <!-- Instructor User -->
+    <% } else { %>
+        <% Object.keys(closedAssignments).forEach((ca, i) => { %>
+            <span class="badge badge-pill badge-dark" style="font-size: 1.1em;"><%= ca %></span>
+            <p style="float: right;">
+                Due Date:
+                <%= closedAssignments[ca][0].deadline.getMonth() +1 %>/<%= closedAssignments[ca][0].deadline.getDate() %>/<%= closedAssignments[ca][0].deadline.getFullYear() %>
+            </p>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Student</th>
+                    <th scope="col">Student ID#</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Answers</th>
+                    <th scope="col">Total Points</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% closedAssignments[ca].forEach((student, j) => { %>
+                        <tr>
+                            <th scope="row"><%= student.studentName %></th>
+                            <td><%= student.facultyId %></td>
+                            <td><%= student.studentEmail %></td>
+                            <td>
+                                <a data-toggle="collapse" href="#<%= student.studentName %><%= i %><%= j %>" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                    <i class="fas fa-question-circle"></i>
+                                </a>
+                                <div class="collapse" id="<%= student.studentName %><%= i %><%= j %>">
+                                   <p>
+                                       <% if (student.answers.length > 0) { %>
+                                            Answers: <%= student.answers %>
+                                       <% } else { %>
+                                            No Submission
+                                       <% } %>
+                                    </p> 
+                                </div>
+                            </td>
+                            <td><%= student.corrects %>/<%= student.totalPoints %></td>
+                          </tr>
+                    <% }) %>
+                </tbody>
+              </table><br>
+        <% }) %>
+    <% } %>
+    
+  </main>
+
+
+<%- include("./partials/coursefooter") %>

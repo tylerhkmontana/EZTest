@@ -74,7 +74,7 @@ router.get("/course/:courseid/assignment/:assignmentid", ensureAuthenticated ,(r
     if (err) {
       console.log(err)
     }
-    Assignment.find({courseId}, (err, assignmentList) => { // for the menu
+    Assignment.find({courseId}, (err, assignments) => { // for the menu
       if (err) {
         console.log(err)
       }
@@ -94,7 +94,7 @@ router.get("/course/:courseid/assignment/:assignmentid", ensureAuthenticated ,(r
               course: course,
               user: req.user.name,
               usertype: req.user.usertype,
-              assignments: assignmentList,
+              assignments: assignments,
               targetAssignment: assignment,
               submitted: true
             })
@@ -109,7 +109,7 @@ router.get("/course/:courseid/assignment/:assignmentid", ensureAuthenticated ,(r
               course: course,
               user: req.user.name,
               usertype: req.user.usertype,
-              assignments: assignmentList,
+              assignments: assignments,
               targetAssignment: assignment,
               submitted: false
             })
@@ -176,7 +176,60 @@ router.get("/course/:courseid/pastassignment/:assignmentid", ensureAuthenticated
   })
 })
 
-// Enter Course
+// Grade Page
+router.get("/course/:courseid/grade", ensureAuthenticated, (req, res) => {
+  const studentId = req.user._id
+  const courseId = req.params.courseid
+
+  Course.findById(courseId, (err, course) => {
+    if (err) {
+      console.log(err)
+    }
+    Assignment.find({courseId}, (err, assignments) => {
+      if (err) {
+        console.log(err)
+      }
+      
+      // Get submitted assignments
+      AssignmentParticipant.find({ studentId: req.user._id }, (err, data) => {
+        if (err) {
+          console.log(err)
+        }
+
+    
+        const gradedAssignments = data.map(d => {
+          // The student has submitted the assignment
+            return {
+              assignmentName: d.assignmentName,
+              totalPoints: d.totalPoints,
+              corrects: d.corrects,
+              deadline: d.deadline,
+            }
+        })
+
+        // Find total grades
+        let accumulativePoints = 0
+        let accumulativeCorrects = 0
+        gradedAssignments.forEach(g => {
+          accumulativePoints += g.totalPoints
+          accumulativeCorrects += g.corrects
+        })
+
+        res.render("grade", {
+          course: course,
+          user: req.user.name,
+          usertype: req.user.usertype,
+          assignments: assignments,
+          gradedAssignments: gradedAssignments,
+          accumulativeCorrects: accumulativeCorrects,
+          accumulativePoints: accumulativePoints
+        })
+      })   
+    })
+  })
+})
+
+// Enroll Course
 router.post("/dashboard", (req, res) => {
   const courseCode = req.body.courseCode
 
@@ -208,7 +261,10 @@ router.post("/dashboard", (req, res) => {
             const newCourseParticipant = new CourseParticipant({
               courseName: course.courseName,
               courseId: course._id,
-              studentId: req.user._id
+              studentId: req.user._id,
+              studentName: req.user.name,
+              studentEmail: req.user.email,
+              facultyId: req.user.facultyid
             })
             newCourseParticipant.save()
             .then(newCourseParticipant => {
@@ -270,16 +326,27 @@ router.post("/course/:courseid/assignment/:assignmentid/submitAssignment", (req,
       if (err) {
         console.log(err)
       }
+      const currentTime = new Date()
       // Check if a student has already submitted this assignment or not
       if (student) {
         req.flash("error_msg", "You've already submitted this assignment/test")
         res.redirect(`/student/course/${courseId}/assignment/${assignmentId}`)
+      } else if (currentTime > assignment.deadline) {
+        req.flash("error_msg", "You cannot submit an assignment that passed the due date")
+        res.redirect(`/student/course/${courseId}/assignment/${assignmentId}`)
       } else {
         const newParticipant = AssignmentParticipant({
           assignmentId: assignmentId,
+          courseId: courseId,
+          assignmentName: assignment.assignmentName,
+          deadline: assignment.deadline,
           studentId: studentId,
           answers: studentAnswers,
-          corrects: correctCount
+          studentName: req.user.name,
+          studentEmail: req.user.email,
+          facultyId: req.user.facultyid,
+          corrects: correctCount,
+          totalPoints: assignment.totalPoints
         })
         newParticipant.save()
          .then(result => {

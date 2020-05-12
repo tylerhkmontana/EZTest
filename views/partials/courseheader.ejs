@@ -5,10 +5,10 @@
 
   <% if (usertype === "Student"){ %>
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/student/dashboard"><%= typeof user !="undefined" ? user: "" %>
-    <span class="badge badge-pill badge-warning"><%= usertype %></span>    
+
     <% } else { %>
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/instructor/dashboard"><%= typeof user !="undefined" ? user: "" %>
-      <span class="badge badge-pill badge-danger"><%= usertype %></span>
+      
    <% } %>
 </a>
 
@@ -45,7 +45,10 @@
               <ul class="nav flex-column" id="sideMenu">
 
                 <!-- Course Title -->
-                <li class="nav-item" style="font-size: 20px;"><span class="badge badge-info"><%= course.courseName.toUpperCase() %></span></li>
+                <li class="nav-item" style="font-size: 20px;">
+                  <span class="badge badge-info"><%= course.courseName.toUpperCase() %></span>
+                  <span class="badge badge-pill badge-warning"><%= usertype %></span>    
+                </li>
         
                 <li class="nav-item">
                   <a class="nav-link" href="/student/course/<%= course._id %>"><strong>Home</strong></a>
@@ -67,7 +70,7 @@
                       <ul class="list-group">
                         <% assignments.forEach(assignment => { %>
                           <% const currentTime = new Date() %>
-                          <% if (currentTime > assignment.deadline || assignment.status === "close"){ %>
+                          <% if (assignment.status === "close"){ %>
                             <li class="list-group-item"><a href="/student/course/<%= course._id %>/pastassignment/<%= assignment._id %>"><%= assignment.assignmentName %></a></li>
                           <% } %>
                         <% }) %>
@@ -83,8 +86,16 @@
                       <ul class="list-group">
                         <% assignments.forEach(assignment => { %>
                           <% const currentTime = new Date() %>
-                          <% if (currentTime < assignment.deadline && assignment.status === "open"){ %>
-                            <li class="list-group-item"><a href="/student/course/<%= course._id %>/assignment/<%= assignment._id %>"><%= assignment.assignmentName %></a></li>
+                          <% if (assignment.status === "open"){ %>
+                            <%if (assignment.deadline < currentTime) { %>
+                              <li class="list-group-item">
+                                <a href="/student/course/<%= course._id %>/assignment/<%= assignment._id %>" style="color: red;"><%= assignment.assignmentName %>(Late)</a>
+                              </li>
+                            <% } else { %>
+                              <li class="list-group-item">
+                                <a href="/student/course/<%= course._id %>/assignment/<%= assignment._id %>"><%= assignment.assignmentName %></a>
+                              </li>
+                            <% } %>
                           <% } %>
                         <% }) %>
                       </ul>
@@ -94,7 +105,7 @@
         
                 <!-- Grade Menu -->
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Grade</a>
+                  <a class="nav-link" href="/student/course/<%= course._id %>/grade">Grade</a>
                 </li>
         
               </ul>
@@ -108,7 +119,10 @@
               <ul class="nav flex-column" id="sideMenu">
 
                 <!-- Course Title -->
-                <li class="nav-item" style="font-size: 20px;"><span class="badge badge-info"><%= course.courseName.toUpperCase() %></span></li>
+                <li class="nav-item" style="font-size: 20px;">
+                  <span class="badge badge-info"><%= course.courseName.toUpperCase() %></span>
+                  <span class="badge badge-pill badge-danger"><%= usertype %></span>
+                </li>
                 
         
                 <li class="nav-item">
@@ -131,7 +145,7 @@
                       <ul class="list-group">
                         <% assignments.forEach(assignment => { %>
                           <% const currentTime = new Date() %>
-                          <% if (currentTime > assignment.deadline || assignment.status === "close"){ %>
+                          <% if (assignment.status === "close"){ %>
                             <li class="list-group-item"><a href="/student/course/<%= course._id %>/pastassignment/<%= assignment._id %>"><%= assignment.assignmentName %></a></li>
                           <% } %>
                         <% }) %>
@@ -146,8 +160,16 @@
                       <ul class="list-group">
                         <% assignments.forEach(assignment => { %>
                           <% const currentTime = new Date() %>
-                          <% if (currentTime < assignment.deadline && assignment.status === "open"){ %>
-                            <li class="list-group-item"><a href="/student/course/<%= course._id %>/assignment/<%= assignment._id %>"><%= assignment.assignmentName %></a></li>
+                          <% if (assignment.status === "open"){ %>
+                            <%if (assignment.deadline < currentTime) { %>
+                              <li class="list-group-item">
+                                <a href="/student/course/<%= course._id %>/assignment/<%= assignment._id %>" style="color: red;"><%= assignment.assignmentName %>(Late)</a>
+                              </li>
+                            <% } else { %>
+                              <li class="list-group-item">
+                                <a href="/student/course/<%= course._id %>/assignment/<%= assignment._id %>"><%= assignment.assignmentName %></a>
+                              </li>
+                            <% } %>
                           <% } %>
                         <% }) %>
                       </ul>
@@ -160,7 +182,7 @@
         
                 <!-- Grade Menu -->
                 <li class="nav-item">
-                  <a class="nav-link" href="#"><strong>Grade</strong></a>
+                  <a class="nav-link" href="/instructor/course/<%= course._id %>/grade"><strong>Grade</strong></a>
                 </li>
         
               </ul>

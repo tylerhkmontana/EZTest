@@ -5,9 +5,13 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-11 px-4">
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-      <h1 class="h2"><%= targetAssignment.assignmentName %></h1> 
-      <p style="float:right;">
-        Due: <%= targetAssignment.deadline.getMonth() + 1 %>/<%= targetAssignment.deadline.getDate() %>/<%= targetAssignment.deadline.getFullYear() %> 
+      <h1 class="h2"><%= targetAssignment.assignmentName %></h1>
+      <% if (targetAssignment.deadline < new Date()) { %>
+        <p style="float:right; color: red;">
+      <% } else { %>
+        <p style="float:right;">
+      <% } %>
+        Due Date: <%= targetAssignment.deadline.getMonth() + 1 %>/<%= targetAssignment.deadline.getDate() %>/<%= targetAssignment.deadline.getFullYear() %> 
         <% if (targetAssignment.deadline.getHours() > 11){ %>
             <%= targetAssignment.deadline.getHours() - 12 %>:<%= targetAssignment.deadline.getMinutes() %> PM
         <% } else { %>

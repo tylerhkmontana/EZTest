@@ -4,6 +4,7 @@ const Course = require("../models/Course")
 const CourseParticipant = require("../models/CourseParticipant")
 const Assignment = require("../models/Assignment")
 const AssignmentParticipant = require("../models/AssignmentParticipant")
+const User = require("../models/User");
 const { ensureAuthenticated } = require("../config/auth");
 
 // login as an instructor
@@ -114,6 +115,56 @@ router.get("/course/:courseid/editAssignment/:assignmentid", ensureAuthenticated
           assignments: assignments,
           targetAssignment: assignment
         })
+      })
+    })
+  })
+})
+
+// Grade Page
+router.get("/course/:courseid/grade", ensureAuthenticated, (req, res) => {
+  const instructorId = req.user._id
+  const courseId = req.params.courseid
+
+  Course.findById(courseId, (err, course) => {
+    if (err) {
+      console.log(err)
+    }
+    Assignment.find({courseId}, (err, assignments) => {
+      if (err) {
+        console.log(err)
+      }
+      const currentTime = new Date()
+      // Get previous assignmnets to be graded
+      const closedAssignments = {}
+      assignments.forEach(a => {
+        if (a.status === "close"){
+          closedAssignments[a.assignmentName] = []
+        }
+      })
+
+      AssignmentParticipant.find({ courseId }, (err, submittedStudents) => {
+        if (err) {
+          console.log(err)
+        }
+
+        submittedStudents.forEach(ss => {
+          closedAssignments[ss.assignmentName].push(ss)
+        })
+        
+        // Object.keys(closedAssignments).forEach(ca => {
+        //   console.log(`${ca}:`)
+        //   closedAssignments[ca].forEach(d => {
+        //     console.log(d.studentName)
+        //   })
+        // })
+ 
+        res.render("grade", {
+          course: course,
+          user: req.user.name,
+          usertype: req.user.usertype,
+          assignments: assignments,
+          closedAssignments: closedAssignments
+        }) 
       })
     })
   })
@@ -317,14 +368,55 @@ router.post("/course/:courseid/editAssignment/:assignmentid", (req, res) => {
 router.post("/course/:courseid/closeassignment/:assignmentid", (req, res) => {
   const courseId = req.params.courseid
   const assignmentId = req.params.assignmentid
-  Assignment.findOneAndUpdate({_id: assignmentId}, {
-    status: "close"
-  }, (err, result) => {
+  Assignment.findOneAndUpdate({_id: assignmentId}, { status: "close" }, (err, result) => {
     if (err) {
       console.log(err)
     }
-    req.flash("success_msg", "The assignment has been closed")
-    res.redirect(`/instructor/course/${courseId}`)
+    AssignmentParticipant.find({ assignmentId }, (err, submittedStudents) => {
+      if (err) {
+        console.log(err)
+      }
+        CourseParticipant.find({ courseId }, (err, courseStudents) => {
+          if (err) {
+            console.log(err)
+          }
+
+          // If all the students in the course has submitted the assignment
+          if (submittedStudents.length === courseStudents.length) {
+            req.flash("success_msg", "The assignment has been closed")
+            res.redirect(`/instructor/course/${courseId}`)
+          } else { // There are some students who did not submit the assignment
+            const submittedStudentIds = submittedStudents.map(s => s.studentId)
+            let unsubmittedStudents =[]
+            courseStudents.forEach(cs => {
+              if (!submittedStudentIds.includes(cs.studentId)) {
+                unsubmittedStudents.push({
+                  assignmentId: assignmentId,
+                  courseId: courseId,
+                  assignmentName: result.assignmentName,
+                  deadline: result.deadline,
+                  studentId: cs.studentId,
+                  answers: [],
+                  studentName: cs.studentName,
+                  studentEmail: cs.studentEmail,
+                  facultyId: cs.facultyId,
+                  corrects: 0,
+                  totalPoints: result.totalPoints
+                })
+              }
+            })
+
+            AssignmentParticipant.insertMany(unsubmittedStudents, (err, docs) => {
+              if (err) {
+                console.log(err)
+              }
+              req.flash("success_msg", "The assignment has been closed")
+              res.redirect(`/instructor/course/${courseId}`)
+            })
+          }
+        })
+    })
+    
   })
 })
 
