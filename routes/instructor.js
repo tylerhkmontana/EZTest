@@ -122,7 +122,6 @@ router.get("/course/:courseid/editAssignment/:assignmentid", ensureAuthenticated
 
 // Grade Page
 router.get("/course/:courseid/grade", ensureAuthenticated, (req, res) => {
-  const instructorId = req.user._id
   const courseId = req.params.courseid
 
   Course.findById(courseId, (err, course) => {
@@ -133,7 +132,7 @@ router.get("/course/:courseid/grade", ensureAuthenticated, (req, res) => {
       if (err) {
         console.log(err)
       }
-      const currentTime = new Date()
+
       // Get previous assignmnets to be graded
       const closedAssignments = {}
       assignments.forEach(a => {
@@ -203,21 +202,25 @@ router.post("/dashboard", (req, res) => {
   }
   
 
-  section = `${section} ${req.body.courseTime[0]}-${req.body.courseTime[1]}`
-  const newCourse = Course({
-    courseName: req.body.courseName,
-    section: section,
-    semester: `${req.body.semester} ${req.body.year}`,
-    instructorName: req.user.name,
-    instructorId: req.user._id
-  })
-  newCourse.save()
-   .then(course => {
-      req.flash("success_msg", "The course has been successfully created")
-      res.redirect("/instructor/dashboard")
-   })
-   .catch(err => console.log(err))
-  
+  if (typeof section === "undefined") {
+    req.flash("error_msg", "You must select a day/days")
+    res.redirect("/instructor/dashboard")
+  } else {
+    section = `${section} ${req.body.courseTime[0]}-${req.body.courseTime[1]}`
+    const newCourse = Course({
+      courseName: req.body.courseName,
+      section: section,
+      semester: `${req.body.semester} ${req.body.year}`,
+      instructorName: req.user.name,
+      instructorId: req.user._id
+    })
+    newCourse.save()
+     .then(course => {
+        req.flash("success_msg", "The course has been successfully created")
+        res.redirect("/instructor/dashboard")
+     })
+     .catch(err => console.log(err))
+  }
 })
 
 // Add New Assignment
