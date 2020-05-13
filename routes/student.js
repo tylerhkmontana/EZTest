@@ -228,15 +228,24 @@ router.get("/course/:courseid/grade", ensureAuthenticated, (req, res) => {
           console.log(err)
         }
 
-    
-        const gradedAssignments = data.map(d => {
-          // The student has submitted the assignment
-            return {
+        // Get previous assignmnets to be graded
+        const closedAssignments = {}
+        assignments.forEach(a => {
+          if (a.status === "close"){
+            closedAssignments[a.assignmentName] = []
+          }
+        })
+
+        const gradedAssignments = []
+        data.forEach(d => {
+          if (d.assignmentName in closedAssignments){
+            gradedAssignments.push({
               assignmentName: d.assignmentName,
               totalPoints: d.totalPoints,
               corrects: d.corrects,
               deadline: d.deadline,
-            }
+            })
+          }
         })
 
         // Find total grades

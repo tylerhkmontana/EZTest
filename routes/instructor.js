@@ -78,7 +78,6 @@ router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
             }
           })
 
-          console.log(classOverviews)
           res.render("course", {
             course: course,
             user: req.user.name,
@@ -194,9 +193,11 @@ router.get("/course/:courseid/grade", ensureAuthenticated, (req, res) => {
         if (err) {
           console.log(err)
         }
-
+      
         submittedStudents.forEach(ss => {
-          closedAssignments[ss.assignmentName].push(ss)
+          if (ss.assignmentName in closedAssignments) {
+            closedAssignments[ss.assignmentName].push(ss)
+          }
         })
       
         res.render("grade", {
