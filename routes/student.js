@@ -4,6 +4,7 @@ const Course = require("../models/Course")
 const CourseParticipant = require("../models/CourseParticipant")
 const Assignment = require("../models/Assignment")
 const AssignmentParticipant = require("../models/AssignmentParticipant")
+const Announcement = require("../models/Announcement")
 const { ensureAuthenticated } = require("../config/auth");
 
 // login as a student
@@ -68,31 +69,37 @@ router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
         if (err) {
           console.log(err)
         }
-
-        const currentTime = new Date()
-        const submittedAssignmentIds = result.map(r => r.assignmentId)
-        const classOverviews = openAssignments.map(oa => {
-          if (submittedAssignmentIds.includes(`${oa._id}`)) {
-            return {
-              assignmentName: oa.assignmentName,
-              daysLeft: oa.deadline - currentTime,
-              isSubmitted: true
-            }
-          } else {
-            return {
-              assignmentName: oa.assignmentName,
-              daysLeft: oa.deadline - currentTime,
-              isSubmitted: false
-            }
+        Announcement.find({ courseId }, (err, announces) => {
+          if (err) {
+            console.log(err)
           }
-        })
 
-        res.render("course", {
-          course: course,
-          user: req.user.name,
-          usertype: req.user.usertype,
-          assignments: assignments,
-          classOverviews: classOverviews
+          const currentTime = new Date()
+          const submittedAssignmentIds = result.map(r => r.assignmentId)
+          const classOverviews = openAssignments.map(oa => {
+            if (submittedAssignmentIds.includes(`${oa._id}`)) {
+              return {
+                assignmentName: oa.assignmentName,
+                daysLeft: oa.deadline - currentTime,
+                isSubmitted: true
+              }
+            } else {
+              return {
+                assignmentName: oa.assignmentName,
+                daysLeft: oa.deadline - currentTime,
+                isSubmitted: false
+              }
+            }
+          })
+  
+          res.render("course", {
+            course: course,
+            user: req.user.name,
+            usertype: req.user.usertype,
+            assignments: assignments,
+            classOverviews: classOverviews,
+            announces: announces
+          })
         })
       })
     })

@@ -15,6 +15,8 @@
 
     <!-- Student User -->
     <% if (usertype === "Student") { %>
+
+      <!-- Displays Current Assignments -->
       <div class="card">
         <div class="card-header">
           Class Overview
@@ -60,12 +62,67 @@
             </div>
           <% } %>  
         </div>
+      </div><br><br>
+
+      <!-- Displays Course Announcements -->
+      <div class="card">
+        <h5 class="card-header">Course Announcements</h5>
+        <div class="card-body">
+          <!-- If there is any announcement -->
+          <% if (announces.length > 0) { %>
+            <table class="table" style="line-height: 1em;">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Announcement</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% announces.forEach(a => { %>
+                  <tr>
+                    <th scope="row">
+                      <%= a.dateAdded.getMonth() + 1 %>/<%= a.dateAdded.getDate() %>/<%= a.dateAdded.getFullYear() %>
+                    </th>
+                    <td>
+                      <a href="#" data-toggle="modal" data-target="#modal<%= a._id %>"><%= a.title %></a>
+                    </td>
+                  </tr>
+
+                  <div class="modal fade" id="modal<%= a._id %>" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="<%= a._id %><%= a.title %>"><%= a.title %></h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <%= a.announcement %>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              </tbody>
+            </table>
+            <!-- No announcement -->
+          <% } else { %>
+            <p>There is no course announcement</p>
+          <% } %>
+        </div>
       </div>
+
 
 
       
     <!-- Instructor User -->
     <% } else { %>
+
+      <!-- Displays Current Assignments -->
       <div class="card">
         <div class="card-header">
           Class Overview
@@ -106,6 +163,99 @@
               <p class="card-text">There is no assignment from this course at the moment</p>
             </div>
           <% } %>  
+        </div>
+      </div><br><br>
+
+      <!-- Displays Course Announcements -->
+      <div class="card">
+        <h5 class="card-header">Course Announcements 
+          <!-- Add Course Announcement -->
+          <button type="button" class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal" data-target="#addAnnouncement">
+            Add
+          </button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="addAnnouncement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">New Announcement</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form action="/instructor/course/<%= course._id %>/addAnnouncement" method="POST">
+                    <div class="form-group">
+                      <label for="announcementTitle">Title</label>
+                      <input type="txt" class="form-control" id="announcementTitle" name="title">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleFormControlTextarea1">Announcement</label>
+                      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="announcement"></textarea>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </h5>
+        <div class="card-body">
+          <!-- If there is any announcement -->
+          <% if (announces.length > 0) { %>
+            <table class="table" style="line-height: 1em;">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Announcement</th>
+                  <th scope="col">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% announces.forEach(a => { %>
+                  <tr>
+                    <th scope="row">
+                      <%= a.dateAdded.getMonth() + 1 %>/<%= a.dateAdded.getDate() %>/<%= a.dateAdded.getFullYear() %>
+                    </th>
+                    <td>
+                      <a href="#" data-toggle="modal" data-target="#modal<%= a._id %>"><%= a.title %></a>
+                    </td>
+                    <td>
+                      <form action="/instructor/course/<%= course._id %>/deleteAnnouncement/<%= a._id %>" method="POST">
+                        <button type="submit" style="border: none; background-color: white"><i class="far fa-trash-alt" style="color: red;"></i></button>
+                      </form>
+                    </td>
+                  </tr>
+
+                  <div class="modal fade" id="modal<%= a._id %>" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="<%= a._id %><%= a.title %>"><%= a.title %></h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <p style="white-space: pre-wrap;"><%= `${a.announcement}` %></p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              </tbody>
+            </table>
+            <!-- No announcement -->
+          <% } else { %>
+            <p>There is no course announcement</p>
+          <% } %>
         </div>
       </div>
     <% } %>

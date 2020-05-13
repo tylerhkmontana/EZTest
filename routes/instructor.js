@@ -4,6 +4,7 @@ const Course = require("../models/Course")
 const CourseParticipant = require("../models/CourseParticipant")
 const Assignment = require("../models/Assignment")
 const AssignmentParticipant = require("../models/AssignmentParticipant")
+const Announcement = require("../models/Announcement")
 const User = require("../models/User");
 const { ensureAuthenticated } = require("../config/auth");
 
@@ -60,30 +61,36 @@ router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
           if (err) {
             console.log(err)
           }
-          
-          // How many students submitted their assignment
-          data.forEach(d => {
-            if(d.assignmentName in numberOfSubmissions){
-              numberOfSubmissions[d.assignmentName] += 1
+          Announcement.find( {courseId }, (err, announces) => {
+            if (err) {
+              console.log(err)
             }
-          })
 
-          // Class overview information
-          const classOverviews = openAssignments.map(oa => {
-            return {
-                assignmentName: oa.assignmentName,
-                daysLeft: oa.deadline - currentTime,
-                numberOfSubmissions: numberOfSubmissions[oa.assignmentName],
-                classSize: classSize
-            }
-          })
+            // How many students submitted their assignment
+            data.forEach(d => {
+              if(d.assignmentName in numberOfSubmissions){
+                numberOfSubmissions[d.assignmentName] += 1
+              }
+            })
 
-          res.render("course", {
-            course: course,
-            user: req.user.name,
-            usertype: req.user.usertype,
-            assignments: assignments,
-            classOverviews: classOverviews
+            // Class overview information
+            const classOverviews = openAssignments.map(oa => {
+              return {
+                  assignmentName: oa.assignmentName,
+                  daysLeft: oa.deadline - currentTime,
+                  numberOfSubmissions: numberOfSubmissions[oa.assignmentName],
+                  classSize: classSize
+              }
+            })
+
+            res.render("course", {
+              course: course,
+              user: req.user.name,
+              usertype: req.user.usertype,
+              assignments: assignments,
+              classOverviews: classOverviews,
+              announces: announces
+            })
           })
         })
       }) 
@@ -460,6 +467,36 @@ router.post("/course/:courseid/closeassignment/:assignmentid", (req, res) => {
         })
     })
     
+  })
+})
+
+router.post("/course/:courseid/addAnnouncement", (req, res) => {
+  const courseId = req.params.courseid
+  const newAnnouncement = Announcement({
+    title: req.body.title,
+    announcement: req.body.announcement,
+    courseId: courseId
+  })
+
+  newAnnouncement.save()
+   .then(result => {
+      req.flash("success_msg", "The announcement has been added")
+      res.redirect(`/instructor/course/${courseId}`)
+   })
+   .catch(err => console.log(err))
+})
+
+router.post("/course/:courseid/deleteAnnouncement/:announcementid", ensureAuthenticated ,(req, res) => {
+  const courseId = req.params.courseid
+  const announcementId = req.params.announcementid
+
+  Announcement.deleteOne({ _id: announcementId }, (err, result) => {
+    if (err) {
+      console.log(err)
+    }
+
+    req.flash("success_msg", "The announcement has been deleted")
+    res.redirect(`/instructor/course/${courseId}`)
   })
 })
 
