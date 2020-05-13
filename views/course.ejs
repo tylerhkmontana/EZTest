@@ -9,7 +9,108 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <h1 class="h2"><%= course.courseName %></h1>
     </div>
+
     <%- include("./partials/messages.ejs") %>
+
+
+    <!-- Student User -->
+    <% if (usertype === "Student") { %>
+      <div class="card">
+        <div class="card-header">
+          Class Overview
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Current Assignments</h5>
+          <% if (classOverviews.length > 0) { %>
+            <% classOverviews.forEach(co => { %>
+              <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <p class="card-text">
+                  <!-- Due date is before the current time -->
+                  <% if (co.daysLeft > 0) { %>
+                    <span class="badge badge-pill badge-dark"><%= co.assignmentName %></span>
+                    
+                    <% if (Math.floor(co.daysLeft/(1000 * 3600 * 24)) > 1) { %>
+                      <span class="badge badge-pill badge-success"><%= Math.floor(co.daysLeft/(1000 * 3600 * 24)) %> days left</span>
+                    <% } else { %>
+                      <span class="badge badge-pill badge-danger"><%= Math.floor(co.daysLeft/(1000 * 3600)) %> hours left</span>
+                    <% } %>
+
+                    <% if (co.isSubmitted) { %>
+                      <span class="badge badge-pill badge-success">Submitted</span>
+                    <% } else { %>
+                      <span class="badge badge-pill badge-warning">Not Submitted</span>
+                    <% } %>
+
+                    <!-- Due date has passed -->
+                  <% } else { %>
+                    <span class="badge badge-pill badge-danger"><%= co.assignmentName %></span>
+
+                    <% if (co.isSubmitted) { %>
+                      <span class="badge badge-pill badge-success">Submitted</span>
+                    <% } else { %>
+                      <span class="badge badge-pill badge-danger">Closed</span>
+                    <% } %>
+                  <% } %>
+                </p>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+              <p class="card-text">There is no assignment from this course at the moment</p>
+            </div>
+          <% } %>  
+        </div>
+      </div>
+
+
+      
+    <!-- Instructor User -->
+    <% } else { %>
+      <div class="card">
+        <div class="card-header">
+          Class Overview
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Current Assignments</h5>
+          <% if (classOverviews.length > 0) { %>
+            <% classOverviews.forEach(co => { %>
+              <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <p class="card-text">
+                  <!-- Due date is before the current time -->
+                  <% if (co.daysLeft > 0) { %>
+                    <span class="badge badge-pill badge-dark"><%= co.assignmentName %></span>
+                    
+                    <% if (Math.floor(co.daysLeft/(1000 * 3600 * 24)) > 1) { %>
+                      <span class="badge badge-pill badge-success"><%= Math.floor(co.daysLeft/(1000 * 3600 * 24)) %> days left</span>
+                    <% } else { %>
+                      <span class="badge badge-pill badge-danger"><%= Math.floor(co.daysLeft/(1000 * 3600)) %> hours left</span>
+                    <% } %>
+
+                    <% if (co.numberOfSubmissions < co.classSize) { %>
+                      <span class="badge badge-pill badge-warning">Submissions <%= co.numberOfSubmissions %>/<%= co.classSize %></span>
+                    <% } else { %>
+                      <span class="badge badge-pill badge-success">Submissions <%= co.numberOfSubmissions %>/<%= co.classSize %></span>
+                    <% } %>
+
+                
+                    <!-- Due date has passed -->
+                  <% } else { %>
+                    <span class="badge badge-pill badge-danger"><%= co.assignmentName %></span>
+                    <span class="badge badge-pill badge-danger">needs to be closed</span>
+                  <% } %>
+                </p>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+              <p class="card-text">There is no assignment from this course at the moment</p>
+            </div>
+          <% } %>  
+        </div>
+      </div>
+    <% } %>
+   
+    
   </main>
 
 

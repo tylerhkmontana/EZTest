@@ -56,11 +56,44 @@ router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
       if (err) {
         console.log(err)
       }
-      res.render("course", {
-        course: course,
-        user: req.user.name,
-        usertype: req.user.usertype,
-        assignments: assignments
+
+      const openAssignments = []
+      assignments.forEach(a => {
+        if (a.status === "open"){
+          openAssignments.push(a)
+        }
+      })
+
+      AssignmentParticipant.find({ studentId: req.user._id }, (err, result) => {
+        if (err) {
+          console.log(err)
+        }
+
+        const currentTime = new Date()
+        const submittedAssignmentIds = result.map(r => r.assignmentId)
+        const classOverviews = openAssignments.map(oa => {
+          if (submittedAssignmentIds.includes(`${oa._id}`)) {
+            return {
+              assignmentName: oa.assignmentName,
+              daysLeft: oa.deadline - currentTime,
+              isSubmitted: true
+            }
+          } else {
+            return {
+              assignmentName: oa.assignmentName,
+              daysLeft: oa.deadline - currentTime,
+              isSubmitted: false
+            }
+          }
+        })
+
+        res.render("course", {
+          course: course,
+          user: req.user.name,
+          usertype: req.user.usertype,
+          assignments: assignments,
+          classOverviews: classOverviews
+        })
       })
     })
   })
@@ -143,7 +176,6 @@ router.get("/course/:courseid/pastassignment/:assignmentid", ensureAuthenticated
               console.log(err)
             }
 
-            console.log(participant.answers)
             res.render("pastassignment", {
               course: course,
               user: req.user.name,

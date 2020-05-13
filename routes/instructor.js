@@ -29,16 +29,65 @@ router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
     if (err) {
       console.log(err)
     }
-    Assignment.find({courseId}, (err, assignments) => {
+    Assignment.find({ courseId }, (err, assignments) => {
       if (err) {
         console.log(err)
       }
-      res.render("course", {
-        course: course,
-        user: req.user.name,
-        usertype: req.user.usertype,
-        assignments: assignments
-      })
+      CourseParticipant.find({ courseId }, (err, courseStudents) => {
+        if (err) {
+          console.log(err)
+        }
+
+        const currentTime = new Date()
+        const classSize = courseStudents.length
+        // Class with status "open"
+        const openAssignments = []
+        assignments.forEach(a => {
+          if (a.status === "open"){
+            openAssignments.push(a)
+          }
+        })
+  
+        // How many students submitted their assignment
+        const numberOfSubmissions = {}
+        assignments.forEach(a => {
+          if (a.status === "open"){
+            numberOfSubmissions[a.assignmentName] = 0
+          }
+        })
+  
+        AssignmentParticipant.find({ courseId }, (err, data) => {
+          if (err) {
+            console.log(err)
+          }
+          
+          // How many students submitted their assignment
+          data.forEach(d => {
+            if(d.assignmentName in numberOfSubmissions){
+              numberOfSubmissions[d.assignmentName] += 1
+            }
+          })
+
+          // Class overview information
+          const classOverviews = openAssignments.map(oa => {
+            return {
+                assignmentName: oa.assignmentName,
+                daysLeft: oa.deadline - currentTime,
+                numberOfSubmissions: numberOfSubmissions[oa.assignmentName],
+                classSize: classSize
+            }
+          })
+
+          console.log(classOverviews)
+          res.render("course", {
+            course: course,
+            user: req.user.name,
+            usertype: req.user.usertype,
+            assignments: assignments,
+            classOverviews: classOverviews
+          })
+        })
+      }) 
     })
   })
 })
@@ -149,14 +198,7 @@ router.get("/course/:courseid/grade", ensureAuthenticated, (req, res) => {
         submittedStudents.forEach(ss => {
           closedAssignments[ss.assignmentName].push(ss)
         })
-        
-        // Object.keys(closedAssignments).forEach(ca => {
-        //   console.log(`${ca}:`)
-        //   closedAssignments[ca].forEach(d => {
-        //     console.log(d.studentName)
-        //   })
-        // })
- 
+      
         res.render("grade", {
           course: course,
           user: req.user.name,
@@ -342,9 +384,6 @@ router.post("/course/:courseid/editAssignment/:assignmentid", (req, res) => {
       return q
     }
   })
-
-  // total number of questinos
-  const totalPoints = questions.length
 
   console.log(deadline)
   Assignment.findOneAndUpdate({_id: assignmentId}, {
