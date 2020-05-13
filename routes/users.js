@@ -17,22 +17,22 @@ router.get("/register", forwardAuthenticated, (req, res) => {
   res.render("register");
 });
 
-// Login with google
-router.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
-);
+// // Login with google
+// router.get(
+//   "/auth/google",
+//   passport.authenticate("google", { scope: ["profile"] })
+// );
 
-// Let the authenticated user to the dashboard
-router.get(
-  "/auth/google/dashboard",
-  passport.authenticate("google", { failureRedirect: "/users/login" }),
-  ensureAuthenticated,
-  (req, res) => {
-    // Successful authentication, redirect home.
-    res.render("dashboard", { user: `${req.user.name}[${req.user.usertype}]` });
-  }
-);
+// // Let the authenticated user to the dashboard
+// router.get(
+//   "/auth/google/dashboard",
+//   passport.authenticate("google", { failureRedirect: "/users/login" }),
+//   ensureAuthenticated,
+//   (req, res) => {
+//     // Successful authentication, redirect home.
+//     res.render("dashboard", { user: `${req.user.name}[${req.user.usertype}]` });
+//   }
+// );
 
 router.get("/student/course", ensureAuthenticated, (req,res) => {
   const user = `${req.user.name}[${req.user.usertype}]`
