@@ -53,7 +53,7 @@ router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
         const numberOfSubmissions = {}
         assignments.forEach(a => {
           if (a.status === "open"){
-            numberOfSubmissions[a.assignmentName] = 0
+            numberOfSubmissions[a._id] = 0
           }
         })
   
@@ -68,8 +68,8 @@ router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
 
             // How many students submitted their assignment
             data.forEach(d => {
-              if(d.assignmentName in numberOfSubmissions){
-                numberOfSubmissions[d.assignmentName] += 1
+              if(d.assignmentId in numberOfSubmissions){
+                numberOfSubmissions[d.assignmentId] += 1
               }
             })
 
@@ -78,7 +78,7 @@ router.get("/course/:courseid", ensureAuthenticated ,(req, res) => {
               return {
                   assignmentName: oa.assignmentName,
                   daysLeft: oa.deadline - currentTime,
-                  numberOfSubmissions: numberOfSubmissions[oa.assignmentName],
+                  numberOfSubmissions: numberOfSubmissions[oa._id],
                   classSize: classSize
               }
             })

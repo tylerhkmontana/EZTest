@@ -89,7 +89,7 @@
                   </tr>
 
                   <div class="modal fade" id="modal<%= a._id %>" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                    <div class="modal-dialog modal-lg" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
                           <h5 class="modal-title" id="<%= a._id %><%= a.title %>"><%= a.title %></h5>
@@ -98,7 +98,7 @@
                           </button>
                         </div>
                         <div class="modal-body">
-                          <%= a.announcement %>
+                          <p style="white-space: pre-wrap;"><%= a.announcement %></p>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -176,7 +176,7 @@
 
           <!-- Modal -->
           <div class="modal fade" id="addAnnouncement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">New Announcement</h5>
