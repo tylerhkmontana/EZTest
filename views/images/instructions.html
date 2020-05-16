@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Instructions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .sidenav {
+            height: 100%;
+            /* Full-height: remove this if you want "auto" height */
+            width: 160px;
+            /* Set the width of the sidebar */
+            position: fixed;
+            /* Fixed Sidebar (stay in place on scroll) */
+            z-index: 1;
+            /* Stay on top */
+            top: 0;
+            /* Stay at the top */
+            left: 0;
+            background-color: #111;
+            /* Black */
+            overflow-x: hidden;
+            /* Disable horizontal scroll */
+            padding-top: 20px;
+        }
+
+        /* The navigation menu links */
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+        }
+
+        /* When you mouse over the navigation links, change their color */
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
+
+        /* Style page content */
+        .main {
+            margin-left: 160px;
+            /* Same as the width of the sidebar */
+            padding: 0px 10px;
+        }
+
+        /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidenav">
+        <a href="#r">Register</a>
+        <a href="#i">Instructor</a>
+        <a href="#s">Student</a>
+        <a href="#c">Contact</a>
+    </div>
+
+    <!-- Page content -->
+    <div class="main">
+        <h1 style="text-align: center">EZTEST</h1>
+
+
+        <div class="register" id="r">
+            <h3>Register</h3>
+            <img src="register.jpg" alt="register" class="center">
+
+
+
+            <p>
+                When you land on our webpage, the website prompts you to register an account or login.<br>
+                For first time users, either an instructor or a student, you must register an account before you can
+                continue.<br>
+            </p>
+
+            <img src="registration.jpg" alt="registration" class="center">
+
+            <p>
+                After filling out your email, password, and faculty/student id, select the <strong>appropriate radio button</strong> to <br>
+                either register as a student or an instructor.
+            </p>
+            <br><br>
+
+            <p>
+                    After registraion, you will be redirecrted to our homepage where you will need to login with your provided credentials to <br>
+                    access your account.
+                </p>
+            <img src="login.jpg" alt="login" class="center">
+
+           
+        </div>
+
+        <div clas="instructor" id="i">
+            <h3>Instructor</h3>
+
+            <p>
+                    After logging in, you will be redirecrted to your account homepage.<br>
+                    Click on the create course button to create a new course and add study material. 
+                </p>
+            <img src="instructora.jpg" alt="instructora" class="center">
+
+            
+            <p>
+                    Fill up the form with the necessary details and click <strong>create</strong>.
+            </p>
+            <img src="instructorb.jpg" alt="instructorb" class="center">
+
+            
+            <p>
+                    After creating the new course, the course is available for you to add materials to.<br>
+                    You can add additional courses by clicking the <strong>create course</strong> button.<br>
+                    For students to access this course they will need the course code shown in the course box.
+                </p>
+            <img src="instructorc.jpg" alt="instructorc" class="center">
+
+            <p>
+                    Once inside the course menu, the dashboard displays options to create announcements.<br>
+                    The side bar displays options to create assignments, view grades etc.
+                </p>
+
+            <img src="instructord.jpg" alt="instructord" class="center">
+
+           
+            <p>
+                    Clicking on the assignments tab opens more options. To create new assignment or to view older assignments.
+                </p>
+            <img src="instructorf.jpg" alt="instructorf" class="center">
+
+            <p>
+                    To create a new assignment click on the new assignment button which opens a prompt to enter assingment name and deadline.<br>
+                    <Strong>Before cliking the save button</Strong>, click on the create question button which allows you to add questions for the<br>
+                    assignment.
+                </p>
+    
+
+            <img src="instructorg.jpg" alt="instructorg" class="center">
+
+            <p>
+                    The create question prompt allows you to create two types of questions. Selcting the multiple choice type opens another prompt to<br>
+                    edit question and select the correct answer.
+                </p>
+            <img src="instructorh.jpg" alt="instructorh" class="center">
+            <p>
+                    To create more questions, click on the create question button again. (This time selecting a short answer question)
+                </p>
+            <img src="instructori.jpg" alt="instructori" class="center">
+
+            <p>
+                    Once you have added the necessary questions and provided the answers, click on save to save the assignment which then becomes available<br>
+                    to students.
+    
+                </p>
+
+            <img src="instructorj.jpg" alt="instructorj" class="center">
+
+            <p>
+                    clicking on the assignments tab now reveals previous and current assignments.
+    
+                </p>
+
+            <img src="instructork.jpg" alt="instructork" class="center">
+            <p>
+                    Assignments are graded automatically. Clicking on the grades tab reveals students who have completed the assingment and their attained score.
+    
+                </p>
+            
+
+            <img src="instructorl.jpg" alt="instructorl" class="center">
+
+           
+
+
+            
+        </div>
+
+        <div class="student" id="s">
+            <h3>Student</h3>
+
+            <p>
+                    After logging in, you will be redirecrted to your account homepage.<br>
+                    Click on the enroll button to enroll in a course. 
+            </p>
+
+            <img src="studenta.jpg" alt="studenta" class="center">
+            <p>
+                Cliking the enroll button opens a prompt to enter the course code. <Strong>Ask your instructor for the course code for your class.</Strong> Hit enroll.
+            </p>
+            <img src="studentb.jpg" alt="studenta" class="center">
+            <p>
+                Once you have entered the correct course code, the course is now available on your homepage.<br>
+                To access course material, cllick enter.
+            </p>
+            <img src="studentc.jpg" alt="studentc" class="center">
+            <p>
+                On the course dashboard you can see the current assignment, its due date, and its status(whether you have completed the assignment or not).<br>
+                Below the assignments you can see any announcements from your instructor.
+
+            </p>
+            <img src="studentd.jpg" alt="studentd" class="center">
+            <p>
+                Clicking on the announcment opens a dilaog box with the announcment from your instructor.
+            </p>
+            <img src="studentx.jpg" alt="studentx" class="center">
+            <p>
+                Assignments and gradebook is displayed on the sidebar.
+            </p>
+            <img src="studenty.jpg" alt="studenty" class="center">
+            <p>
+                Clicking on Assignment reveals more options. Under current assignment you can view the current assingment.<br>
+                You can review old assingments by clicking on the previous assignments tab.
+            </p>
+            <img src="studente.jpg" alt="studente" class="center">
+            <p>
+                Clicking on Big-O analysis under current assignment reveals the entire entire assingment.<br>
+                After completing the assignment. click submit.
+            </p>
+            <img src="studentf.jpg" alt="studentf" class="center">
+
+            <p>
+                <Strong>YOU CAN ONLY SUBMIT AN ASSIGNMENT ONCE.</Strong> Make sure to double-check your answers before you click submit.<br>
+                Onc eyou have done so, click confirm!
+            </p>
+            <img src="studentg.jpg" alt="studentg" class="center">
+            <p>
+                Selecting any previous assignments from the sidebar reveals all the answers from preivious assingments. 
+            </p>
+            <img src="studenth.jpg" alt="studenth" class="center">
+            <p>
+                The grades tab reveals all graded assignments.
+            </p>
+            <img src="studenti.jpg" alt="studenti" class="center">
+        </div>
+
+
+        <div class="contact" id="c">
+                <h3 style="text-align: center">Contact</h3>
+
+                <footer>
+                    <div class="contactinfo">
+                        <p style="text-align: center">
+                            For additional help, contact us: eztest@example.com<br>
+                            &copy;EZTEST
+                        </p>
+                    </div>
+                </footer>
+        </div>
+
+
+
+    </div>
+</body>
+
+</html>

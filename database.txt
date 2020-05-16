@@ -1,69 +1,110 @@
-User = {
-    _id: ObjectId("..."),
-    name: String,
-    email: String,
-    password: String,
-    facultyid: String,
-    usertype: String
-}
+ <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+              <ul class="nav flex-column" id="sideMenu">
 
-Course = {
-    _id: ObjectId("..."),
-    courseName: String,
-    section: String,
-    instructorName: String,
-    semester: String,
-    Instructor_id: ObjectId("...")
-}
+                <!-- Course Title -->
+                <li class="nav-item" style="font-size: 20px;">
+                  <span class="badge badge-info"><%= course.courseName.toUpperCase() %></span>
+                  <span class="badge badge-pill badge-danger"><%= usertype %></span>
+                </li>
+                
+        
+                <li class="nav-item">
+                  <a class="nav-link" href="/instructor/course/<%= course._id %>"><strong>Home</strong></a>
+                </li>
 
-Assignment = {
-    _id: ObjectId("..."),
-    assignmentName: String,
-    deadline: Date,
-    totalPoints: Int,
-    Course_id: ObjectId("...")
-}
-
-Question = {
-    _id: ObjectId("..."),
-    type: String,
-    Instruction: String,
-    multipleChoices(optional): {
-        a: String,
-        b: String,
-        c: String,
-        d: String
-    },
-    answer: String,
-    Assignment_id: ObjectId("...")
-}
-
-CourseParticipant = {
-    _id: ObjectId("..."),
-    courseName:  String,
-    Course_id: ObjectId("..."),
-    User_id: ObjectId("...")
-}
-
-AssignmentParticipant = {
-    _id: ObjectId("..."),
-    assignmentName: String,
-    Assignment_id: ObjectId("..."),
-    User_id: ObjectId("..."),
-    totalPoint: int
-}
-
-QuestionParticipant = {
-    _id: ObjectId("..."),
-    Question_id: ObjectId("..."),
-    User_id: ObjectId("..."),
-    answer: String
-}
+                <!-- Assignments -->
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="collapse" href="#Assignments" onclick="setActive(this)"><strong>Assignments</strong></a>
+                </li>
+                <div class="collapse" id="Assignments">
+                  <ul class="list-group">
 
 
+                    <!-- Previous assignments -->
+                    <li class="nav-item">
+                      <a class="nav-link" data-toggle="collapse" href="#PreviousAssignments" onclick="setActive(this)">Previous Assignments</a>
+                    </li>
+                    <div class="collapse" id="PreviousAssignments">
+                      <ul class="list-group">
+                        <% assignments.forEach(assignment => { %>
+                          <% const currentTime = new Date() %>
+                          <% if (assignment.status === "close"){ %>
+                            <li class="list-group-item"><a href="/student/course/<%= course._id %>/pastassignment/<%= assignment._id %>"><%= assignment.assignmentName %></a></li>
+                          <% } %>
+                        <% }) %>
+                      </ul>
+                    </div>
 
-7. A student should be able to see his grade on the assignment that he submitted
-8. An instructor should be able to see how his students doing with the course
-9. Additional features may be added (Course announcement, Edit Assignment, Deadline, etc..)
+                    <!-- Current assignments -->
+                    <li class="nav-item">
+                      <a class="nav-link" data-toggle="collapse" href="#CurrentAssignments" onclick="setActive(this)">Current Assignments</a>
+                    </li>
+                    <div class="collapse" id="CurrentAssignments">
+                      <ul class="list-group">
+                        <% assignments.forEach(assignment => { %>
+                          <% const currentTime = new Date() %>
+                          <% if (assignment.status === "open"){ %>
+                            <%if (assignment.deadline < currentTime) { %>
+                              <li class="list-group-item">
+                                <a href="/student/course/<%= course._id %>/assignment/<%= assignment._id %>" style="color: red;"><%= assignment.assignmentName %>(Late)</a>
+                              </li>
+                            <% } else { %>
+                              <li class="list-group-item">
+                                <a href="/student/course/<%= course._id %>/assignment/<%= assignment._id %>"><%= assignment.assignmentName %></a>
+                              </li>
+                            <% } %>
+                          <% } %>
+                        <% }) %>
+                      </ul>
+                    </div>
+
+                    <!-- Create new assignment -->
+                    <li class="list-group-item"><a class="btn btn-outline-success btn-sm" href="/instructor/course/<%= course._id %>/newAssignment">New Assignment</a></li>
+                  </ul>
+                </div>
+        
+                <!-- Grade Menu -->
+                <li class="nav-item">
+                  <a class="nav-link" href="/instructor/course/<%= course._id %>/grade"><strong>Grade</strong></a>
+                </li>
+        
+              </ul>
+            </div>
+          </nav>
 
 
+
+
+
+
+          <!-- top navbar -->
+<div class="dropdown">
+  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Menu
+  </a>
+
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    <div class="container-fluid">
+      <h6 class="dropdown-header">|Course Resources|</h6>
+      <a class="dropdown-item" href="https://tophat.com/" target="_blank">TopHat</a>
+      <a class="dropdown-item" href="https://www.zybooks.com/" target="_blank">zyBooks</a>
+      <a class="dropdown-item" href="https://drive.google.com/drive/folders/1co7vzY9_75cCiuNTHXCGf3pKbpf_TTwC" target="_blank">Course Drive</a>
+      <a class="dropdown-item" href="https://www.w3schools.com/" target="_blank">W3Schools</a>
+      <div class="dropdown-divider"></div>
+      <h6 class="dropdown-header">|About|</h6>
+      <a class="dropdown-item" href="https://www.w3schools.com/" target="_blank">Developers</a>
+    </div>
+  </div>
+</div>
+
+
+
+  <% if (usertype === "Student"){ %>
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/student/dashboard"><%= typeof user !="undefined" ? user: "" %>
+
+    <% } else { %>
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/instructor/dashboard"><%= typeof user !="undefined" ? user: "" %>
+      
+   <% } %>
+</a>
