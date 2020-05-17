@@ -149,11 +149,7 @@
 
     <!-- Student -->
     <% } else { %>
-        <% if (submitted){ %>
-            <div class="alert alert-info" role="alert">
-                This Assignment has been submitted
-            </div>
-        <% } %>
+      
         
             <% targetAssignment.questions.forEach((q, i) => { %>
                 <% if (q.questionType === "shortAnswer") { %>

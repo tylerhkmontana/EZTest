@@ -177,7 +177,6 @@ router.get("/course/:courseid/pastassignment/:assignmentid", ensureAuthenticated
           console.log(err)
         }
 
-        if (participant) {
           Assignment.findById(assignmentId, (err, assignment) => { // for the current page
             if (err) {
               console.log(err)
@@ -189,27 +188,10 @@ router.get("/course/:courseid/pastassignment/:assignmentid", ensureAuthenticated
               usertype: req.user.usertype,
               assignments: assignmentList,
               targetAssignment: assignment,
-              submitted: true,
               studentAnswers: participant.answers
             })
           })
-        } else {
-          Assignment.findById(assignmentId, (err, assignment) => { // for the current page
-            if (err) {
-              console.log(err)
-            }
-          
-            res.render("pastassignment", {
-              course: course,
-              user: req.user.name,
-              usertype: req.user.usertype,
-              assignments: assignmentList,
-              targetAssignment: assignment,
-              submitted: false,
-              studentAnswers: []
-            })
-          })
-        }
+       
       })
     })
   })
