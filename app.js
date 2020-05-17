@@ -7,7 +7,7 @@ const flash = require("connect-flash");
 const session = require("express-session");
 
 const app = express();
-
+app.use(express.static("public"))
 // Passport config
 require("./config/passport")(passport);
 
@@ -60,6 +60,10 @@ app.use("/users", require("./routes/users.js"));
 app.use("/student", require("./routes/student.js"))
 
 app.use("/instructor", require("./routes/instructor.js"))
+
+app.get("/instruction", (req, res) => {
+  res.sendFile(__dirname + "/public/instructions.html")
+})
 
 const PORT = process.env.PORT || 3000;
 

@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 
+
 // User model
 const User = require("../models/User");
 const { forwardAuthenticated, ensureAuthenticated } = require("../config/auth");
@@ -38,6 +39,7 @@ router.get("/student/course", ensureAuthenticated, (req,res) => {
   const user = `${req.user.name}[${req.user.usertype}]`
   res.render("course", { user })
 })
+
 
 // Register Handle
 router.post("/register", (req, res) => {
